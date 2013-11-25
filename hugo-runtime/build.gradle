@@ -1,5 +1,7 @@
-import org.aspectj.tools.ajc.Main
 import com.android.build.gradle.LibraryPlugin
+import org.aspectj.bridge.IMessage
+import org.aspectj.bridge.MessageHandler
+import org.aspectj.tools.ajc.Main
 
 buildscript {
   dependencies {
@@ -38,7 +40,27 @@ android.libraryVariants.all { variant ->
         "-classpath", javaCompile.classpath.asPath,
         "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
     ]
-    new Main().runMain(args, false)
+
+    MessageHandler handler = new MessageHandler(true);
+    new Main().run(args, handler)
+
+    def log = project.logger
+    for (IMessage message : handler.getMessages(null, true)) {
+      switch (message.getKind()) {
+        case IMessage.ABORT:
+        case IMessage.ERROR:
+        case IMessage.FAIL:
+          log.error message.message, message.thrown
+          break;
+        case IMessage.WARNING:
+        case IMessage.INFO:
+          log.info message.message, message.thrown
+          break;
+        case IMessage.DEBUG:
+          log.debug message.message, message.thrown
+          break;
+      }
+    }
   }
 }
 
