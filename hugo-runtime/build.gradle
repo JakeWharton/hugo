@@ -1,0 +1,58 @@
+import org.aspectj.tools.ajc.Main
+import com.android.build.gradle.LibraryPlugin
+
+buildscript {
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.6.+'
+    classpath 'org.aspectj:aspectjtools:1.7.4'
+  }
+}
+
+apply plugin: 'android-library'
+
+dependencies {
+  compile 'org.aspectj:aspectjrt:1.7.4'
+  compile project(':hugo-annotations')
+}
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion '19.0.0'
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+}
+
+android.libraryVariants.all { variant ->
+  LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
+  JavaCompile javaCompile = variant.javaCompile
+  javaCompile.doLast {
+    String[] args = [
+        "-showWeaveInfo",
+        "-1.5",
+        "-inpath", javaCompile.destinationDir.toString(),
+        "-aspectpath", javaCompile.classpath.asPath,
+        "-d", javaCompile.destinationDir.toString(),
+        "-classpath", javaCompile.classpath.asPath,
+        "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
+    ]
+    new Main().runMain(args, false)
+  }
+}
+
+// Use Maven to install the aar into our local maven repo. Quick and easy (and dirty).
+task install(type: Exec, dependsOn: assemble) {
+  // TODO get version number dynamically when i'm not being lazy
+  // TODO get aar path dynamically when i'm not being lazy
+  executable = 'mvn'
+  args = [
+      "install:install-file",
+      "-DgroupId=com.jakewharton.hugo",
+      "-DartifactId=hugo-runtime",
+      "-Dversion=${version}",
+      "-Dpackaging=aar",
+      "-Dfile=build/libs/hugo-runtime-${version}.aar"
+  ]
+}

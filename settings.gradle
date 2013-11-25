@@ -1,0 +1,3 @@
+include ':hugo-annotations'
+include ':hugo-plugin'
+include ':hugo-runtime'

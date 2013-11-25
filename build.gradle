@@ -1,0 +1,40 @@
+allprojects {
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+  }
+
+  dependencies {
+    repositories {
+      mavenCentral()
+    }
+  }
+
+  group = 'com.jakewharton.hugo'
+  version = '1.0.0-SNAPSHOT'
+
+  apply plugin: 'maven'
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.8'
+}
+
+task cleanExample(type: Exec) {
+  executable = 'gradle'
+  workingDir = project.file('hugo-example')
+  args = [ 'clean' ]
+}
+
+task assembleExample(type: Exec) {
+  executable = 'gradle'
+  workingDir = project.file('hugo-example')
+  args = [ 'assemble' ]
+}
+
+task installExample(type: Exec) {
+  executable = 'gradle'
+  workingDir = project.file('hugo-example')
+  args = [ 'installDebug' ]
+}
