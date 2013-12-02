@@ -7,7 +7,7 @@ Release Process
  4. Update version numbers in `HugoPlugin.groovy` file.
  5. Commit: `git commit -am "Prepare version X.Y.Z."`
  6. Tag: `git tag -a X.Y.Z -m "Version X.Y.Z"`
- 7. Push: `git push`
+ 7. Push: `git push && git push --tags`
  8. Release: `./gradlew clean assemble uploadArchives`
  9. Update version number in `gradle.properties` file to next "SNAPSHOT" version.
  10. Update version number in `hugo-example/build.gradle` file to next "SNAPSHOT" version.
