@@ -4,7 +4,7 @@ Hugo
 Annotation-triggered method call logging for your debug builds.
 
 As a programmer, you often add log statements to print method calls, their arguments, their return
-values, and the time it took the execute. This is not a question. Every one of you does this.
+values, and the time it took to execute. This is not a question. Every one of you does this.
 Shouldn't it be easier?
 
 Simply add `@DebugLog` to your methods and you will automatically get all of the things listed above
