@@ -7,6 +7,9 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'nexus'
 
+targetCompatibility = '1.6'
+sourceCompatibility = '1.6'
+
 modifyPom {
   project {
     name "Hugo Annotations"
