@@ -23,7 +23,8 @@ D/Example: ⇠ getName = "Jake Wharton" [16ms]
 ```
 
 The logging will only happen in debug builds and the annotation itself is never present in the
-compiled class file for any builds.
+compiled class file for any build type. This means you can keep the annotation and check it into
+source control. It has zero effect on non-debug builds.
 
 Add it to your project today!
 
