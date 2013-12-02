@@ -66,7 +66,6 @@ android.libraryVariants.all { variant ->
 
 // Use Maven to install the aar into our local maven repo. Quick and easy (and dirty).
 task install(type: Exec, dependsOn: assemble) {
-  // TODO get version number dynamically when i'm not being lazy
   // TODO get aar path dynamically when i'm not being lazy
   executable = 'mvn'
   args = [
@@ -78,3 +77,5 @@ task install(type: Exec, dependsOn: assemble) {
       "-Dfile=build/libs/hugo-runtime-${version}.aar"
   ]
 }
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

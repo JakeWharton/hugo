@@ -11,8 +11,8 @@ allprojects {
     }
   }
 
-  group = 'com.jakewharton.hugo'
-  version = '1.0.0-SNAPSHOT'
+  group = GROUP
+  version = VERSION_NAME
 
   apply plugin: 'maven'
 }
