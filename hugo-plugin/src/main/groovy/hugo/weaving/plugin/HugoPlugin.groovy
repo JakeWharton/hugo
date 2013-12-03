@@ -2,7 +2,6 @@ package hugo.weaving.plugin
 
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
-import com.android.builder.BuilderConstants
 import org.aspectj.bridge.IMessage
 import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
@@ -32,8 +31,8 @@ class HugoPlugin implements Plugin<Project> {
     }
 
     variants.all { variant ->
-      if (!BuilderConstants.DEBUG.equals(variant.buildType.name)) {
-        log.debug("Skipping non-debug build type '${variant.buildType.name}'.")
+      if (!variant.buildType.isDebuggable()) {
+        log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
         return;
       }
 
