@@ -19,7 +19,7 @@ public String getName(String first, String last) {
 ```
 ```
 D/Example: ⇢ getName(first="Jake", last="Wharton")
-D/Example: ⇠ getName = "Jake Wharton" [16ms]
+D/Example: ⇠ getName [16ms] = "Jake Wharton"
 ```
 
 The logging will only happen in debug builds and the annotation itself is never present in the
