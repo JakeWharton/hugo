@@ -81,7 +81,7 @@ public class Hugo {
     } else if (value instanceof String) {
       builder.append('"').append(value).append('"');
     } else if (value.getClass().isArray()) {
-      builder.append(Arrays.toString((Object[]) value));
+      builder.append(arrayToString(value));
     } else {
       builder.append(value.toString());
     }
@@ -93,5 +93,42 @@ public class Hugo {
       className = m.replaceAll("");
     }
     return className.substring(className.lastIndexOf('.') + 1);
+  }
+
+  private static String arrayToString(final Object o) {
+    if (o == null) {
+      return "null";
+    }
+    if (o.getClass().isArray()) {
+      if (o instanceof Object[]) {
+        return Arrays.toString((Object[]) o);
+      }
+      //must be primitive
+      if (byte[].class.equals(o.getClass())) {
+        return Arrays.toString((byte[])o);
+      }
+      if (short[].class.equals(o.getClass())) {
+        return Arrays.toString((short[])o);
+      }
+      if (char[].class.equals(o.getClass())) {
+        return Arrays.toString((char[])o);
+      }
+      if (int[].class.equals(o.getClass())) {
+        return Arrays.toString((int[])o);
+      }
+      if (long[].class.equals(o.getClass())) {
+        return Arrays.toString((long[])o);
+      }
+      if (float[].class.equals(o.getClass())) {
+        return Arrays.toString((float[])o);
+      }
+      if (double[].class.equals(o.getClass())) {
+        return Arrays.toString((double[])o);
+      }
+      if (boolean[].class.equals(o.getClass())) {
+        return Arrays.toString((boolean[])o);
+      }
+    }
+    return "unknown"; //TODO throw exception?
   }
 }
