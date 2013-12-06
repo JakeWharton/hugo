@@ -62,13 +62,13 @@ public class Hugo {
     String methodName = signature.getName();
     boolean hasReturnType = signature.getReturnType() != void.class;
 
-    StringBuilder builder = new StringBuilder().append("⇠ ")
-        .append(methodName);
-        
-    builder.append(" [")
+    StringBuilder builder = new StringBuilder() //
+        .append("⇠ ")
+        .append(methodName)
+        .append(" [")
         .append(lengthMillis)
         .append("ms]");
-        
+
     if (hasReturnType) {
       builder.append(" = ");
       appendObject(builder, result);
