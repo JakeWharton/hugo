@@ -64,13 +64,15 @@ public class Hugo {
 
     StringBuilder builder = new StringBuilder().append("⇠ ")
         .append(methodName);
+        
+    builder.append(" [")
+        .append(lengthMillis)
+        .append("ms]");
+        
     if (hasReturnType) {
       builder.append(" = ");
       appendObject(builder, result);
     }
-    builder.append(" [")
-        .append(lengthMillis)
-        .append("ms]");
 
     Log.d(asTag(className), builder.toString());
   }
