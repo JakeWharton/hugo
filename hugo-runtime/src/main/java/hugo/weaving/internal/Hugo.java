@@ -41,8 +41,8 @@ public class Hugo {
     String[] parameterNames = codeSignature.getParameterNames();
     Object[] parameterValues = joinPoint.getArgs();
 
-    StringBuilder builder = new StringBuilder();
-    builder.append("⇢ ").append(methodName).append('(');
+    StringBuilder builder = new StringBuilder("⇢ ");
+    builder.append(methodName).append('(');
     for (int i = 0; i < parameterValues.length; i++) {
       if (i > 0) {
         builder.append(", ");
@@ -62,8 +62,7 @@ public class Hugo {
     String methodName = signature.getName();
     boolean hasReturnType = signature.getReturnType() != void.class;
 
-    StringBuilder builder = new StringBuilder() //
-        .append("⇠ ")
+    StringBuilder builder = new StringBuilder("⇠ ")
         .append(methodName)
         .append(" [")
         .append(lengthMillis)
