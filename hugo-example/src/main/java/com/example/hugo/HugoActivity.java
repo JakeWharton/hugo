@@ -16,6 +16,9 @@ public class HugoActivity extends Activity {
     printArgs("The", "Quick", "Brown", "Fox");
 
     Log.i("Fibonacci", "fibonacci's 4th number is " + fibonacci(4));
+
+    Greeter greeter = new Greeter("Jake");
+    Log.d("Greeting", greeter.sayHello());
   }
 
   @DebugLog
@@ -35,5 +38,19 @@ public class HugoActivity extends Activity {
     }
     // NOTE: Don't ever do this. Use the iterative approach!
     return fibonacci(number - 1) + fibonacci(number - 2);
+  }
+
+  static class Greeter {
+    private final String name;
+
+    @DebugLog
+    Greeter(String name) {
+      this.name = name;
+    }
+
+    @DebugLog
+    public String sayHello() {
+      return "Hello, " + name;
+    }
   }
 }

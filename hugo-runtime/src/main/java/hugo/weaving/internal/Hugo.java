@@ -7,9 +7,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 @Aspect
@@ -17,10 +19,13 @@ public class Hugo {
   private static final Pattern ANONYMOUS_CLASS = Pattern.compile("\\$\\d+$");
 
   @Pointcut("execution(@hugo.weaving.DebugLog * *(..))")
-  public void debugLog() {}
+  public void method() {}
 
-  @Around("debugLog()")
-  public Object debugLogMethod(ProceedingJoinPoint joinPoint) throws Throwable {
+  @Pointcut("execution(@hugo.weaving.DebugLog *.new(..))")
+  public void constructor() {}
+
+  @Around("method() || constructor()")
+  public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
     pushMethod(joinPoint);
 
     long startNanos = System.nanoTime();
@@ -34,7 +39,7 @@ public class Hugo {
   }
 
   private static void pushMethod(JoinPoint joinPoint) {
-    MethodSignature codeSignature = (MethodSignature) joinPoint.getSignature();
+    CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
     String className = codeSignature.getDeclaringTypeName();
     String methodName = codeSignature.getName();
@@ -56,11 +61,12 @@ public class Hugo {
   }
 
   private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
-    MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+    Signature signature = joinPoint.getSignature();
 
     String className = signature.getDeclaringTypeName();
     String methodName = signature.getName();
-    boolean hasReturnType = signature.getReturnType() != void.class;
+    boolean hasReturnType = signature instanceof MethodSignature
+        && ((MethodSignature) signature).getReturnType() != void.class;
 
     StringBuilder builder = new StringBuilder("⇠ ")
         .append(methodName)
