@@ -7,116 +7,114 @@ import java.util.Set;
 public final class Strings {
 
   public static String toString(final Object o) {
-        if (o == null) {
-            return "null";
-        }
-
-        Class<?> clazz = o.getClass();
-
-        if (o instanceof String) {
-            return '"' + o.toString() + '"';
-        }
-
-        if (Byte.class == clazz) {
-            return byteToString((Byte) o);
-        }
-
-        if (clazz.isArray()) {
-            Class<?> innerClazz = clazz.getComponentType();
-            if (innerClazz.isArray()) {
-                return deepArrayToString((Object[]) o);
-            }
-
-            return arrayToString(innerClazz, o);
-        }
-        return o.toString();
+    if (o == null) {
+      return "null";
     }
+
+    Class<?> clazz = o.getClass();
+
+    if (o instanceof String) {
+      return '"' + o.toString() + '"';
+    }
+
+    if (Byte.class == clazz) {
+      return byteToString((Byte) o);
+    }
+
+    if (clazz.isArray()) {
+      Class<?> innerClazz = clazz.getComponentType();
+      if (innerClazz.isArray()) {
+        return deepArrayToString((Object[]) o);
+      }
+
+      return arrayToString(innerClazz, o);
+    }
+    return o.toString();
+  }
 
   private static String arrayToString(final Class<?> clazz, final Object o) {
-
-        // byte/Byte array
-        if (byte.class == clazz) {
-            return byteArrayToString((byte[]) o);
-        }
-        if (Byte.class == clazz) {
-            return byteArrayToString((Byte[]) o);
-        }
-
-        // other arrays
-        if (short.class == clazz) {
-            return Arrays.toString((short[]) o);
-        }
-        if (char.class == clazz) {
-            return Arrays.toString((char[]) o);
-        }
-        if (int.class == clazz) {
-            return Arrays.toString((int[]) o);
-        }
-        if (long.class == clazz) {
-            return Arrays.toString((long[]) o);
-        }
-        if (float.class == clazz) {
-            return Arrays.toString((float[]) o);
-        }
-        if (double.class == clazz) {
-            return Arrays.toString((double[]) o);
-        }
-        if (boolean.class == clazz) {
-            return Arrays.toString((boolean[]) o);
-        }
-        // element is an array of object references
-        return Arrays.toString((Object[]) o);
+    // byte/Byte array
+    if (byte.class == clazz) {
+      return byteArrayToString((byte[]) o);
     }
+    if (Byte.class == clazz) {
+      return byteArrayToString((Byte[]) o);
+    }
+
+    // other arrays
+    if (short.class == clazz) {
+      return Arrays.toString((short[]) o);
+    }
+    if (char.class == clazz) {
+      return Arrays.toString((char[]) o);
+    }
+    if (int.class == clazz) {
+      return Arrays.toString((int[]) o);
+    }
+    if (long.class == clazz) {
+      return Arrays.toString((long[]) o);
+    }
+    if (float.class == clazz) {
+      return Arrays.toString((float[]) o);
+    }
+    if (double.class == clazz) {
+      return Arrays.toString((double[]) o);
+    }
+    if (boolean.class == clazz) {
+      return Arrays.toString((boolean[]) o);
+    }
+    // element is an array of object references
+    return Arrays.toString((Object[]) o);
+  }
 
   /** A more human-friendly version of Arrays#toString(byte[]) that uses hex representation. */
   private static String byteArrayToString(final byte[] bytes) {
-        StringBuilder builder = new StringBuilder("[");
-        for (int i = 0; i < bytes.length; i++) {
-            if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(byteToString(bytes[i]));
-        }
-        return builder.append(']').toString();
+    StringBuilder builder = new StringBuilder("[");
+    for (int i = 0; i < bytes.length; i++) {
+      if (i > 0) {
+        builder.append(", ");
+      }
+      builder.append(byteToString(bytes[i]));
     }
+    return builder.append(']').toString();
+  }
 
   /** A more human-friendly version of Arrays#toString(Byte[]) that uses hex representation. */
   private static String byteArrayToString(final Byte[] bytes) {
-        StringBuilder builder = new StringBuilder("[");
-        for (int i = 0; i < bytes.length; i++) {
-            if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append(byteToString(bytes[i]));
-        }
-        return builder.append(']').toString();
+    StringBuilder builder = new StringBuilder("[");
+    for (int i = 0; i < bytes.length; i++) {
+      if (i > 0) {
+        builder.append(", ");
+      }
+      builder.append(byteToString(bytes[i]));
     }
+    return builder.append(']').toString();
+  }
 
   /** A more human-friendly string representation of a Byte. */
   private static String byteToString(final Byte b) {
-        return String.format("%02x", b);
-    }
+    return String.format("%02x", b);
+  }
 
   /** A more human-friendly string representation of a byte. */
   private static String byteToString(final byte b) {
-        return byteToString(Byte.valueOf(b));
-    }
+    return byteToString(Byte.valueOf(b));
+  }
 
   /**
-     * Copy of {@link Arrays#deepToString(Object[])} modified for more human-friendly representation.
-     * @param a Array
-     * @return human-friendly string representation
-     * @see Arrays#deepToString(Object[])
-     */
+   * Copy of {@link Arrays#deepToString(Object[])} modified for more human-friendly representation.
+   * @param a Array
+   * @return human-friendly string representation
+   * @see Arrays#deepToString(Object[])
+   */
   private static String deepArrayToString(final Object[] a) {
-
-        int bufLen = 20 * a.length;
-        if (a.length != 0 && bufLen <= 0)
-            bufLen = Integer.MAX_VALUE;
-        StringBuilder buf = new StringBuilder(bufLen);
-        deepArrayToString(a, buf, new HashSet<Object[]>());
-        return buf.toString();
-    }
+  int bufLen = 20 * a.length;
+    if (a.length != 0 && bufLen <= 0)
+      bufLen = Integer.MAX_VALUE;
+    StringBuilder buf = new StringBuilder(bufLen);
+    deepArrayToString(a, buf, new HashSet<Object[]>());
+    return buf.toString();
+  }
 
   /**
    * Copy of Arrays#deepToString(Object[], StringBuilder, Set<Object[]>) modified
