@@ -128,6 +128,6 @@ public class Hugo {
     if (boolean[].class.equals(clazz)) {
       return Arrays.toString((boolean[]) o);
     }
-    throw new IllegalArgumentException("Unknown array type: " + o.getClass());
+    throw new IllegalArgumentException("Unknown array type: " + clazz);
   }
 }
