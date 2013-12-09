@@ -31,7 +31,7 @@ Add it to your project today!
 ```groovy
 buildscript {
   dependencies {
-    classpath 'com.jakewharton.hugo:hugo-plugin:1.0.0'
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.0.1'
   }
 }
 

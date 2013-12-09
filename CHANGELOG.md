@@ -1,9 +1,11 @@
 Change Log
 ==========
 
-Version 1.0.1 *(In Development)*
---------------------------------
+Version 1.0.1 *(2013-12-08)*
+----------------------------
 
+ * Support for printing primitive arrays.
+ * Invocation time is now displayed before return value for convenience.
  * Logging is now enabled for all builds marked as debuggable.
 
 
