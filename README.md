@@ -35,6 +35,7 @@ buildscript {
   }
 }
 
+apply plugin: 'android'
 apply plugin: 'hugo'
 ```
 
