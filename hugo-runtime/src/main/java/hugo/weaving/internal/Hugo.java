@@ -20,7 +20,7 @@ public class Hugo {
   public void debugLog() {}
 
   @Around("debugLog()")
-  public Object debugAndInstrumentMethod(ProceedingJoinPoint joinPoint) throws Throwable {
+  public Object debugLogMethod(ProceedingJoinPoint joinPoint) throws Throwable {
     pushMethod(joinPoint);
 
     long startNanos = System.nanoTime();
