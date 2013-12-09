@@ -41,7 +41,7 @@ public class Hugo {
   private static void pushMethod(JoinPoint joinPoint) {
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
-    String className = codeSignature.getDeclaringTypeName();
+    String className = codeSignature.getDeclaringType().getSimpleName();
     String methodName = codeSignature.getName();
     String[] parameterNames = codeSignature.getParameterNames();
     Object[] parameterValues = joinPoint.getArgs();
@@ -57,13 +57,13 @@ public class Hugo {
     }
     builder.append(')');
 
-    Log.d(asTag(className), builder.toString());
+    Log.d(className, builder.toString());
   }
 
   private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
     Signature signature = joinPoint.getSignature();
 
-    String className = signature.getDeclaringTypeName();
+    String className = signature.getDeclaringType().getSimpleName();
     String methodName = signature.getName();
     boolean hasReturnType = signature instanceof MethodSignature
         && ((MethodSignature) signature).getReturnType() != void.class;
@@ -79,7 +79,7 @@ public class Hugo {
       appendObject(builder, result);
     }
 
-    Log.d(asTag(className), builder.toString());
+    Log.d(className, builder.toString());
   }
 
   private static void appendObject(StringBuilder builder, Object value) {
@@ -92,14 +92,6 @@ public class Hugo {
     } else {
       builder.append(value.toString());
     }
-  }
-
-  private static String asTag(String className) {
-    Matcher m = ANONYMOUS_CLASS.matcher(className);
-    if (m.find()) {
-      className = m.replaceAll("");
-    }
-    return className.substring(className.lastIndexOf('.') + 1);
   }
 
   private static String arrayToString(final Object o) {
