@@ -14,6 +14,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import hugo.weaving.internal.util.Strings;
+
 @Aspect
 public class Hugo {
   private static final Pattern ANONYMOUS_CLASS = Pattern.compile("\\$\\d+$");
@@ -83,15 +85,7 @@ public class Hugo {
   }
 
   private static void appendObject(StringBuilder builder, Object value) {
-    if (value == null) {
-      builder.append("null");
-    } else if (value instanceof String) {
-      builder.append('"').append(value).append('"');
-    } else if (value.getClass().isArray()) {
-      builder.append(arrayToString(value));
-    } else {
-      builder.append(value.toString());
-    }
+    builder.append(Strings.toString(value));
   }
 
   private static String asTag(String className) {
@@ -100,52 +94,5 @@ public class Hugo {
       className = m.replaceAll("");
     }
     return className.substring(className.lastIndexOf('.') + 1);
-  }
-
-  private static String arrayToString(final Object o) {
-    if (o instanceof Object[]) {
-      return Arrays.toString((Object[]) o);
-    }
-
-    // Must be primitive array.
-    Class<?> clazz = o.getClass();
-
-    if (byte[].class.equals(clazz)) {
-      return byteArrayToString((byte[]) o);
-    }
-    if (short[].class.equals(clazz)) {
-      return Arrays.toString((short[]) o);
-    }
-    if (char[].class.equals(clazz)) {
-      return Arrays.toString((char[]) o);
-    }
-    if (int[].class.equals(clazz)) {
-      return Arrays.toString((int[]) o);
-    }
-    if (long[].class.equals(clazz)) {
-      return Arrays.toString((long[]) o);
-    }
-    if (float[].class.equals(clazz)) {
-      return Arrays.toString((float[]) o);
-    }
-    if (double[].class.equals(clazz)) {
-      return Arrays.toString((double[]) o);
-    }
-    if (boolean[].class.equals(clazz)) {
-      return Arrays.toString((boolean[]) o);
-    }
-    throw new IllegalArgumentException("Unknown array type: " + clazz);
-  }
-
-  /** A more human-friendly version of Arrays.toString(byte[]) that uses hex representation. */
-  private static String byteArrayToString(byte[] bytes) {
-    StringBuilder builder = new StringBuilder("[");
-    for (int i = 0; i < bytes.length; i++) {
-      if (i > 0) {
-        builder.append(", ");
-      }
-      builder.append(String.format("%02x", bytes[i]));
-    }
-    return builder.append(']').toString();
   }
 }
