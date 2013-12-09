@@ -105,7 +105,7 @@ public class Hugo {
     Class<?> clazz = o.getClass();
 
     if (byte[].class.equals(clazz)) {
-      return Arrays.toString((byte[]) o);
+      return byteArrayToString((byte[]) o);
     }
     if (short[].class.equals(clazz)) {
       return Arrays.toString((short[]) o);
@@ -129,5 +129,17 @@ public class Hugo {
       return Arrays.toString((boolean[]) o);
     }
     throw new IllegalArgumentException("Unknown array type: " + clazz);
+  }
+
+  /** A more human-friendly version of Arrays.toString(byte[]) that uses hex representation. */
+  private static String byteArrayToString(byte[] bytes) {
+    StringBuilder builder = new StringBuilder("[");
+    for (int i = 0; i < bytes.length; i++) {
+      if (i > 0) {
+        builder.append(", ");
+      }
+      builder.append(String.format("%02x", bytes[i]));
+    }
+    return builder.append(']').toString();
   }
 }
