@@ -101,8 +101,8 @@ public class Hugo {
       return Arrays.toString((Object[]) o);
     }
 
-    //must be primitive array
-    final Class<?> clazz = o.getClass();
+    // Must be primitive array.
+    Class<?> clazz = o.getClass();
 
     if (byte[].class.equals(clazz)) {
       return Arrays.toString((byte[]) o);
