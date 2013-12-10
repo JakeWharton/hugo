@@ -82,13 +82,6 @@ public class Hugo {
     Log.d(asTag(clazz), builder.toString());
   }
 
-  private static String asTag(final Class<?> clazz) {
-      if (clazz.isAnonymousClass()) {
-        return asTag(clazz.getEnclosingClass());
-      }
-    return clazz.getSimpleName();
-  }
-
   private static void appendObject(StringBuilder builder, Object value) {
     if (value == null) {
       builder.append("null");
@@ -99,6 +92,13 @@ public class Hugo {
     } else {
       builder.append(value.toString());
     }
+  }
+
+  private static String asTag(final Class<?> clazz) {
+    if (clazz.isAnonymousClass()) {
+      return asTag(clazz.getEnclosingClass());
+    }
+    return clazz.getSimpleName();
   }
 
   private static String arrayToString(final Object o) {
