@@ -1,10 +1,10 @@
-package hugo.weaving.internal.util;
+package hugo.weaving.internal;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class Strings {
+final class Strings {
 
   public static String toString(final Object o) {
     if (o == null) {
@@ -79,7 +79,10 @@ public final class Strings {
     return builder.append(']').toString();
   }
 
-  /** A more human-friendly version of Arrays#toString(Byte[]) that uses hex representation. */
+  /**
+   * A more human-friendly version of Arrays#toString(Object[]) for Byte arrays
+   * that uses hex representation.
+   * */
   private static String byteArrayToString(final Byte[] bytes) {
     StringBuilder builder = new StringBuilder("[");
     for (int i = 0; i < bytes.length; i++) {
@@ -108,7 +111,7 @@ public final class Strings {
    * @see Arrays#deepToString(Object[])
    */
   private static String deepArrayToString(final Object[] a) {
-  int bufLen = 20 * a.length;
+    int bufLen = 20 * a.length;
     if (a.length != 0 && bufLen <= 0)
       bufLen = Integer.MAX_VALUE;
     StringBuilder buf = new StringBuilder(bufLen);
