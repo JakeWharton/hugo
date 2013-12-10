@@ -13,8 +13,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import hugo.weaving.internal.util.Strings;
-
 @Aspect
 public class Hugo {
   private static final Pattern ANONYMOUS_CLASS = Pattern.compile("\\$\\d+$");
