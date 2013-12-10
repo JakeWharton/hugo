@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.util.Log;
+
+import java.lang.Override;
+import java.lang.String;
+
 import hugo.weaving.DebugLog;
 
 public class HugoActivity extends Activity {
@@ -19,6 +23,15 @@ public class HugoActivity extends Activity {
 
     Greeter greeter = new Greeter("Jake");
     Log.d("Greeting", greeter.sayHello());
+
+    (new Annonymous() {
+      @Override
+      @DebugLog
+      public String whoIsThis() {
+        return "I'm a nobody!";
+      }
+    }).whoIsThis();
+
   }
 
   @DebugLog
@@ -52,5 +65,9 @@ public class HugoActivity extends Activity {
     public String sayHello() {
       return "Hello, " + name;
     }
+  }
+
+  private static interface Annonymous {
+      String whoIsThis();
   }
 }
