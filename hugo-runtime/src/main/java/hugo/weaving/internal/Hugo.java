@@ -2,8 +2,6 @@ package hugo.weaving.internal;
 
 import android.util.Log;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -15,8 +13,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 @Aspect
 public class Hugo {
-  private static final Pattern ANONYMOUS_CLASS = Pattern.compile("\\$\\d+$");
-
   @Pointcut("execution(@hugo.weaving.DebugLog * *(..))")
   public void method() {}
 
