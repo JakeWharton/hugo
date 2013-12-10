@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.util.Log;
-
-import java.lang.Override;
-import java.lang.String;
-
 import hugo.weaving.DebugLog;
 
 public class HugoActivity extends Activity {
