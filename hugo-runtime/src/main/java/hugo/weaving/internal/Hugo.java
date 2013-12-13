@@ -52,6 +52,8 @@ public class Hugo {
     }
     builder.append(')');
 
+    builder.append(" @Thread:").append(Thread.currentThread().getName());
+
     Log.d(asTag(clazz), builder.toString());
   }
 

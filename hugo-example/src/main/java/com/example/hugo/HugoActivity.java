@@ -6,6 +6,10 @@ import android.widget.TextView;
 import android.util.Log;
 import hugo.weaving.DebugLog;
 
+import java.lang.Exception;
+import java.lang.Override;
+import java.lang.Runnable;
+
 public class HugoActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -19,6 +23,8 @@ public class HugoActivity extends Activity {
 
     Greeter greeter = new Greeter("Jake");
     Log.d("Greeting", greeter.sayHello());
+
+    startSleepyThread();
   }
 
   @DebugLog
@@ -38,6 +44,29 @@ public class HugoActivity extends Activity {
     }
     // NOTE: Don't ever do this. Use the iterative approach!
     return fibonacci(number - 1) + fibonacci(number - 2);
+  }
+
+  private void startSleepyThread(){
+    Thread sleepyThread = new Thread(new Runnable() {
+      private static final long SOME_POINTLESS_AMOUNT_OF_TIME = 50;
+      @Override
+      public void run() {
+        sleepyMethod(SOME_POINTLESS_AMOUNT_OF_TIME);
+      }
+
+      @DebugLog
+      private void sleepyMethod(long milliseconds){
+        try {
+          Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+          // Note: Nothing expected to do.
+          e.printStackTrace();
+        }
+      }
+    });
+
+    sleepyThread.setName("I'm a lazy thr.. bah! whatever!");
+    sleepyThread.start();
   }
 
   static class Greeter {
