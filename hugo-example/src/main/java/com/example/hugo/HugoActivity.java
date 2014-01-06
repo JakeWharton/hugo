@@ -2,8 +2,9 @@ package com.example.hugo;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.os.SystemClock;
 import android.util.Log;
+import android.widget.TextView;
 import hugo.weaving.DebugLog;
 
 public class HugoActivity extends Activity {
@@ -19,6 +20,8 @@ public class HugoActivity extends Activity {
 
     Greeter greeter = new Greeter("Jake");
     Log.d("Greeting", greeter.sayHello());
+
+    startSleepyThread();
   }
 
   @DebugLog
@@ -38,6 +41,20 @@ public class HugoActivity extends Activity {
     }
     // NOTE: Don't ever do this. Use the iterative approach!
     return fibonacci(number - 1) + fibonacci(number - 2);
+  }
+
+  private void startSleepyThread() {
+    Thread sleepyThread = new Thread(new Runnable() {
+      private static final long SOME_POINTLESS_AMOUNT_OF_TIME = 50;
+
+      @Override public void run() {
+        sleepyMethod(SOME_POINTLESS_AMOUNT_OF_TIME);
+      }
+
+      @DebugLog private void sleepyMethod(long milliseconds) {
+        SystemClock.sleep(milliseconds);
+      }
+    }, "I'm a lazy thr.. bah! whatever!").start();
   }
 
   static class Greeter {

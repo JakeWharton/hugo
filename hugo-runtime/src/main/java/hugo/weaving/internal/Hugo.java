@@ -1,5 +1,6 @@
 package hugo.weaving.internal;
 
+import android.os.Looper;
 import android.util.Log;
 import java.util.concurrent.TimeUnit;
 import org.aspectj.lang.JoinPoint;
@@ -52,7 +53,15 @@ public class Hugo {
     }
     builder.append(')');
 
+    if (!isMainThread()) {
+      builder.append(" @Thread:").append(Thread.currentThread().getName());
+    }
+
     Log.d(asTag(clazz), builder.toString());
+  }
+
+  private static boolean isMainThread() {
+    return Looper.myLooper() == Looper.getMainLooper();
   }
 
   private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
