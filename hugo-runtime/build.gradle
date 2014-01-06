@@ -5,7 +5,7 @@ import org.aspectj.tools.ajc.Main
 
 buildscript {
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.6.+'
+    classpath 'com.android.tools.build:gradle:0.7.+'
     classpath 'org.aspectj:aspectjtools:1.7.4'
   }
 }
