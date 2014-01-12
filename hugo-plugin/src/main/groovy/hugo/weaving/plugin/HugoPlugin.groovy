@@ -50,7 +50,8 @@ class HugoPlugin implements Plugin<Project> {
             "-aspectpath", javaCompile.classpath.asPath,
             "-d", javaCompile.destinationDir.toString(),
             "-classpath", javaCompile.classpath.asPath,
-            "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
+            "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator),
+            "-XnoInline"
         ]
         log.debug "ajc args: " + Arrays.toString(args)
 
