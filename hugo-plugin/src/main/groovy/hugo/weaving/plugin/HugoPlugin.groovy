@@ -35,6 +35,14 @@ class HugoPlugin implements Plugin<Project> {
       compile 'com.jakewharton.hugo:hugo-annotations:1.0.2-SNAPSHOT'
     }
 
+    def sourceArg = "-1.5"
+    def sourceCompatibility = project.android.compileOptions.sourceCompatibility
+    if (sourceCompatibility.isJava6()) {
+      sourceArg = "-1.6"
+    } else if (sourceCompatibility.isJava7()) {
+      sourceArg = "-1.7"
+    }
+
     variants.all { variant ->
       if (!variant.buildType.isDebuggable()) {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
@@ -45,7 +53,7 @@ class HugoPlugin implements Plugin<Project> {
       javaCompile.doLast {
         String[] args = [
             "-showWeaveInfo",
-            "-1.5",
+            sourceArg, // "1.5", "1.6", or "1.7"
             "-inpath", javaCompile.destinationDir.toString(),
             "-aspectpath", javaCompile.classpath.asPath,
             "-d", javaCompile.destinationDir.toString(),
