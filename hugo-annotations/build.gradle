@@ -7,8 +7,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'nexus'
 
-targetCompatibility = '1.6'
-sourceCompatibility = '1.6'
+targetCompatibility = JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_6
 
 modifyPom {
   project {

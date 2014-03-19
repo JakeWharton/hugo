@@ -2,7 +2,7 @@ package hugo.weaving.internal;
 
 import android.os.Looper;
 import android.util.Log;
-import java.util.concurrent.TimeUnit;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -11,6 +11,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import java.util.concurrent.TimeUnit;
 
 @Aspect
 public class Hugo {
@@ -42,7 +44,7 @@ public class Hugo {
     String[] parameterNames = codeSignature.getParameterNames();
     Object[] parameterValues = joinPoint.getArgs();
 
-    StringBuilder builder = new StringBuilder("⇢ ");
+    StringBuilder builder = new StringBuilder("\u21E2 ");
     builder.append(methodName).append('(');
     for (int i = 0; i < parameterValues.length; i++) {
       if (i > 0) {
@@ -72,7 +74,7 @@ public class Hugo {
     boolean hasReturnType = signature instanceof MethodSignature
         && ((MethodSignature) signature).getReturnType() != void.class;
 
-    StringBuilder builder = new StringBuilder("⇠ ")
+    StringBuilder builder = new StringBuilder("\u21E0 ")
         .append(methodName)
         .append(" [")
         .append(lengthMillis)
