@@ -44,7 +44,7 @@ public class HugoActivity extends Activity {
   }
 
   private void startSleepyThread() {
-    Thread sleepyThread = new Thread(new Runnable() {
+    new Thread(new Runnable() {
       private static final long SOME_POINTLESS_AMOUNT_OF_TIME = 50;
 
       @Override public void run() {
