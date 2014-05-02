@@ -19,13 +19,10 @@ class HugoPlugin implements Plugin<Project> {
 
     final def log = project.logger
     final def variants
-    final def plugin
     if (hasApp) {
       variants = project.android.applicationVariants
-      plugin = project.plugins.getPlugin(AppPlugin)
     } else {
       variants = project.android.libraryVariants
-      plugin = project.plugins.getPlugin(LibraryPlugin)
     }
 
     project.dependencies {
@@ -50,7 +47,7 @@ class HugoPlugin implements Plugin<Project> {
             "-aspectpath", javaCompile.classpath.asPath,
             "-d", javaCompile.destinationDir.toString(),
             "-classpath", javaCompile.classpath.asPath,
-            "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
+            "-bootclasspath", project.android.bootClasspath.join(File.pathSeparator)
         ]
         log.debug "ajc args: " + Arrays.toString(args)
 
