@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
+    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7'
   }
 }
 

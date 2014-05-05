@@ -2,6 +2,7 @@ allprojects {
   buildscript {
     repositories {
       mavenCentral()
+      jcenter()
     }
   }
 
@@ -15,10 +16,6 @@ allprojects {
   version = VERSION_NAME
 
   apply plugin: 'maven'
-}
-
-task wrapper(type: Wrapper) {
-  gradleVersion = '1.11'
 }
 
 task cleanExample(type: Exec) {
