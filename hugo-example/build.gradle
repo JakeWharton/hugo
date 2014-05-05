@@ -7,8 +7,8 @@ buildscript {
       mavenLocal()
     }
 
-    classpath 'com.android.tools.build:gradle:0.10.0'
-    classpath 'com.jakewharton.hugo:hugo-plugin:1.1.0'
+    classpath 'com.android.tools.build:gradle:0.10.+'
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.1.1-SNAPSHOT'
   }
 }
 
