@@ -18,20 +18,6 @@ allprojects {
   apply plugin: 'maven'
 }
 
-task cleanExample(type: Exec) {
-  executable = 'gradle'
-  workingDir = project.file('hugo-example')
-  args = [ 'clean' ]
-}
-
-task assembleExample(type: Exec) {
-  executable = 'gradle'
-  workingDir = project.file('hugo-example')
-  args = [ 'assemble' ]
-}
-
-task installExample(type: Exec) {
-  executable = 'gradle'
-  workingDir = project.file('hugo-example')
-  args = [ 'installDebug' ]
-}
+task cleanExample(dependsOn: ':hugo-example:assemble')
+task assembleExample(dependsOn: ':hugo-example:assemble')
+task installExample(dependsOn: ':hugo-example:assemble')
