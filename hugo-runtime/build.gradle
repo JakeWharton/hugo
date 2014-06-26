@@ -5,7 +5,7 @@ import org.aspectj.tools.ajc.Main
 
 buildscript {
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.9.+'
+    classpath 'com.android.tools.build:gradle:0.10.+'
     classpath 'org.aspectj:aspectjtools:1.7.4'
   }
 }
@@ -19,7 +19,7 @@ dependencies {
 
 android {
   compileSdkVersion 19
-  buildToolsVersion '19.0.3'
+  buildToolsVersion '19.1.0'
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -38,7 +38,7 @@ android.libraryVariants.all { variant ->
         "-aspectpath", javaCompile.classpath.asPath,
         "-d", javaCompile.destinationDir.toString(),
         "-classpath", javaCompile.classpath.asPath,
-        "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
+        "-bootclasspath", plugins.findPlugin("android-library").getBootClasspath()
     ]
 
     MessageHandler handler = new MessageHandler(true);
@@ -78,4 +78,4 @@ task install(type: Exec, dependsOn: assemble) {
   ]
 }
 
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
