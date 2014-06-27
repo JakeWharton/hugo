@@ -19,19 +19,19 @@ allprojects {
 }
 
 task cleanExample(type: Exec) {
-  executable = 'gradle'
+  executable = '../gradlew'
   workingDir = project.file('hugo-example')
   args = [ 'clean' ]
 }
 
 task assembleExample(type: Exec) {
-  executable = 'gradle'
+  executable = '../gradlew'
   workingDir = project.file('hugo-example')
   args = [ 'assemble' ]
 }
 
 task installExample(type: Exec) {
-  executable = 'gradle'
+  executable = '../gradlew'
   workingDir = project.file('hugo-example')
   args = [ 'installDebug' ]
 }
