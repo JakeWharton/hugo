@@ -7,7 +7,7 @@
     >
 
   <uses-sdk
-      android:minSdkVersion="9"/>
+      android:minSdkVersion="7"/>
 
   <application/>
 </manifest>
