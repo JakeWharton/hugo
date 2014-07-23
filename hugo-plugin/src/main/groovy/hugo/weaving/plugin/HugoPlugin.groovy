@@ -11,8 +11,8 @@ import org.gradle.api.tasks.compile.JavaCompile
 
 class HugoPlugin implements Plugin<Project> {
   @Override void apply(Project project) {
-    def hasApp = project.plugins.hasPlugin(AppPlugin)
-    def hasLib = project.plugins.hasPlugin(LibraryPlugin)
+    def hasApp = project.plugins.withType(AppPlugin)
+    def hasLib = project.plugins.withType(LibraryPlugin)
     if (!hasApp && !hasLib) {
       throw new IllegalStateException("'android' or 'android-library' plugin required.")
     }
