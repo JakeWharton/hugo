@@ -30,6 +30,10 @@ Add it to your project today!
 
 ```groovy
 buildscript {
+  repositories {
+    mavenCentral()
+  }
+
   dependencies {
     classpath 'com.jakewharton.hugo:hugo-plugin:1.1.0'
   }
