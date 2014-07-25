@@ -10,7 +10,7 @@ apply plugin: 'nexus'
 dependencies {
   compile gradleApi()
   compile localGroovy()
-  compile 'com.android.tools.build:gradle:0.7.+'
+  compile 'com.android.tools.build:gradle:0.10.+'
   compile 'org.aspectj:aspectjtools:1.7.4'
   compile 'org.aspectj:aspectjrt:1.7.4'
 }
