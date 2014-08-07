@@ -3,23 +3,16 @@ import org.aspectj.bridge.IMessage
 import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 
-buildscript {
-  dependencies {
-    classpath 'com.android.tools.build:gradle:0.9.+'
-    classpath 'org.aspectj:aspectjtools:1.7.4'
-  }
-}
-
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 dependencies {
-  compile 'org.aspectj:aspectjrt:1.7.4'
+  compile 'org.aspectj:aspectjrt:1.8.1'
   compile project(':hugo-annotations')
 }
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion '19.0.3'
+  compileSdkVersion 20
+  buildToolsVersion '20.0.0'
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -38,7 +31,7 @@ android.libraryVariants.all { variant ->
         "-aspectpath", javaCompile.classpath.asPath,
         "-d", javaCompile.destinationDir.toString(),
         "-classpath", javaCompile.classpath.asPath,
-        "-bootclasspath", plugin.runtimeJarList.join(File.pathSeparator)
+        "-bootclasspath", plugin.bootClasspath.join(File.pathSeparator)
     ]
 
     MessageHandler handler = new MessageHandler(true);
