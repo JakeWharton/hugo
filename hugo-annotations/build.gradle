@@ -1,9 +1,3 @@
-buildscript {
-  dependencies {
-    classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7'
-  }
-}
-
 apply plugin: 'java'
 apply plugin: 'nexus'
 
