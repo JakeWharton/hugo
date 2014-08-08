@@ -39,8 +39,8 @@ buildscript {
   }
 }
 
-apply plugin: 'android'
-apply plugin: 'hugo'
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.hugo'
 ```
 
 
