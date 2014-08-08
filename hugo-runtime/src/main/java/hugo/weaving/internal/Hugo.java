@@ -85,7 +85,7 @@ public class Hugo {
       appendObject(builder, result);
     }
 
-    Log.d(asTag(clazz), builder.toString());
+    Log.v(asTag(clazz), builder.toString());
   }
 
   private static void appendObject(StringBuilder builder, Object value) {
