@@ -2,7 +2,7 @@ package hugo.weaving.internal;
 
 import android.os.Looper;
 import android.util.Log;
-
+import hugo.weaving.DebugLog;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
@@ -24,19 +25,35 @@ public class Hugo {
 
   @Around("method() || constructor()")
   public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
-    pushMethod(joinPoint);
+    CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
+    boolean showInputs, showOutput;
+    try {
+     String methodName = codeSignature.getName();
+     Class<?> clazz = codeSignature.getDeclaringType();
+     Class<?>[] methodParams = codeSignature.getParameterTypes();
+     Method m = clazz.getDeclaredMethod(methodName, methodParams);
+
+     DebugLog debugLog = m.getAnnotation(DebugLog.class);
+     showInputs = debugLog.input();
+     showOutput = debugLog.output();
+    } catch (java.lang.NoSuchMethodException e){
+        showInputs = true;
+        showOutput = true;
+    }
+
+    pushMethod(joinPoint,showInputs);
 
     long startNanos = System.nanoTime();
     Object result = joinPoint.proceed();
     long stopNanos = System.nanoTime();
     long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
 
-    popMethod(joinPoint, result, lengthMillis);
+    popMethod(joinPoint, showOutput, result, lengthMillis);
 
     return result;
   }
 
-  private static void pushMethod(JoinPoint joinPoint) {
+  private static void pushMethod(JoinPoint joinPoint, boolean showInputs) {
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
     Class<?> clazz = codeSignature.getDeclaringType();
@@ -45,15 +62,17 @@ public class Hugo {
     Object[] parameterValues = joinPoint.getArgs();
 
     StringBuilder builder = new StringBuilder("\u21E2 ");
-    builder.append(methodName).append('(');
-    for (int i = 0; i < parameterValues.length; i++) {
-      if (i > 0) {
-        builder.append(", ");
-      }
-      builder.append(parameterNames[i]).append('=');
-      appendObject(builder, parameterValues[i]);
+    if(showInputs) {
+     builder.append(methodName).append('(');
+     for (int i = 0; i < parameterValues.length; i++) {
+        if (i > 0) {
+            builder.append(", ");
+        }
+        builder.append(parameterNames[i]).append('=');
+        appendObject(builder, parameterValues[i]);
+     }
+     builder.append(')');
     }
-    builder.append(')');
 
     if (!isMainThread()) {
       builder.append(" @Thread:").append(Thread.currentThread().getName());
@@ -66,7 +85,7 @@ public class Hugo {
     return Looper.myLooper() == Looper.getMainLooper();
   }
 
-  private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+  private static void popMethod(JoinPoint joinPoint, boolean showOutput, Object result, long lengthMillis) {
     Signature signature = joinPoint.getSignature();
 
     Class<?> clazz = signature.getDeclaringType();
@@ -80,7 +99,7 @@ public class Hugo {
         .append(lengthMillis)
         .append("ms]");
 
-    if (hasReturnType) {
+    if (hasReturnType && showOutput) {
       builder.append(" = ");
       appendObject(builder, result);
     }
