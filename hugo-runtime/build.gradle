@@ -67,7 +67,7 @@ task install(type: Exec, dependsOn: assemble) {
       "-DartifactId=hugo-runtime",
       "-Dversion=${version}",
       "-Dpackaging=aar",
-      "-Dfile=build/libs/hugo-runtime-${version}.aar"
+      "-Dfile=build/outputs/aar/hugo-runtime-${version}.aar"
   ]
 }
 
