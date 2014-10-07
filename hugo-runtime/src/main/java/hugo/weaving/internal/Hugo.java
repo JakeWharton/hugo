@@ -55,15 +55,11 @@ public class Hugo {
     }
     builder.append(')');
 
-    if (!isMainThread()) {
+    if (Looper.myLooper() != Looper.getMainLooper()) {
       builder.append(" @Thread:").append(Thread.currentThread().getName());
     }
 
     Log.d(asTag(cls), builder.toString());
-  }
-
-  private static boolean isMainThread() {
-    return Looper.myLooper() == Looper.getMainLooper();
   }
 
   private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
