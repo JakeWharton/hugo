@@ -51,7 +51,7 @@ public class Hugo {
         builder.append(", ");
       }
       builder.append(parameterNames[i]).append('=');
-      appendObject(builder, parameterValues[i]);
+      builder.append(Strings.toString(parameterValues[i]));
     }
     builder.append(')');
 
@@ -78,14 +78,10 @@ public class Hugo {
 
     if (hasReturnType) {
       builder.append(" = ");
-      appendObject(builder, result);
+      builder.append(Strings.toString(result));
     }
 
     Log.v(asTag(cls), builder.toString());
-  }
-
-  private static void appendObject(StringBuilder builder, Object value) {
-    builder.append(Strings.toString(value));
   }
 
   private static String asTag(Class<?> cls) {
