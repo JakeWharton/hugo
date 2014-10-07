@@ -39,7 +39,7 @@ public class Hugo {
   private static void pushMethod(JoinPoint joinPoint) {
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
-    Class<?> clazz = codeSignature.getDeclaringType();
+    Class<?> cls = codeSignature.getDeclaringType();
     String methodName = codeSignature.getName();
     String[] parameterNames = codeSignature.getParameterNames();
     Object[] parameterValues = joinPoint.getArgs();
@@ -59,7 +59,7 @@ public class Hugo {
       builder.append(" @Thread:").append(Thread.currentThread().getName());
     }
 
-    Log.d(asTag(clazz), builder.toString());
+    Log.d(asTag(cls), builder.toString());
   }
 
   private static boolean isMainThread() {
@@ -69,7 +69,7 @@ public class Hugo {
   private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
     Signature signature = joinPoint.getSignature();
 
-    Class<?> clazz = signature.getDeclaringType();
+    Class<?> cls = signature.getDeclaringType();
     String methodName = signature.getName();
     boolean hasReturnType = signature instanceof MethodSignature
         && ((MethodSignature) signature).getReturnType() != void.class;
@@ -85,17 +85,17 @@ public class Hugo {
       appendObject(builder, result);
     }
 
-    Log.v(asTag(clazz), builder.toString());
+    Log.v(asTag(cls), builder.toString());
   }
 
   private static void appendObject(StringBuilder builder, Object value) {
     builder.append(Strings.toString(value));
   }
 
-  private static String asTag(final Class<?> clazz) {
-    if (clazz.isAnonymousClass()) {
-      return asTag(clazz.getEnclosingClass());
+  private static String asTag(Class<?> cls) {
+    if (cls.isAnonymousClass()) {
+      return asTag(cls.getEnclosingClass());
     }
-    return clazz.getSimpleName();
+    return cls.getSimpleName();
   }
 }
