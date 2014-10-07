@@ -2,73 +2,59 @@ package hugo.weaving.internal;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 final class Strings {
-
-  public static String toString(final Object o) {
-    if (o == null) {
+  static String toString(Object obj) {
+    if (obj == null) {
       return "null";
     }
-
-    Class<?> clazz = o.getClass();
-
-    if (o instanceof String) {
-      return '"' + o.toString() + '"';
+    if (obj instanceof CharSequence) {
+      return '"' + obj.toString() + '"';
     }
 
-    if (Byte.class == clazz) {
-      return byteToString((Byte) o);
+    Class<?> cls = obj.getClass();
+    if (Byte.class == cls) {
+      return byteToString((Byte) obj);
     }
 
-    if (clazz.isArray()) {
-      Class<?> innerClazz = clazz.getComponentType();
-      if (innerClazz.isArray()) {
-        return deepArrayToString((Object[]) o);
-      }
-
-      return arrayToString(innerClazz, o);
+    if (cls.isArray()) {
+      return arrayToString(cls.getComponentType(), obj);
     }
-    return o.toString();
+    return obj.toString();
   }
 
-  private static String arrayToString(final Class<?> clazz, final Object o) {
-    // byte/Byte array
-    if (byte.class == clazz) {
-      return byteArrayToString((byte[]) o);
+  private static String arrayToString(Class<?> cls, Object obj) {
+    if (byte.class == cls) {
+      return byteArrayToString((byte[]) obj);
     }
-    if (Byte.class == clazz) {
-      return byteArrayToString((Byte[]) o);
+    if (short.class == cls) {
+      return Arrays.toString((short[]) obj);
     }
-
-    // other arrays
-    if (short.class == clazz) {
-      return Arrays.toString((short[]) o);
+    if (char.class == cls) {
+      return Arrays.toString((char[]) obj);
     }
-    if (char.class == clazz) {
-      return Arrays.toString((char[]) o);
+    if (int.class == cls) {
+      return Arrays.toString((int[]) obj);
     }
-    if (int.class == clazz) {
-      return Arrays.toString((int[]) o);
+    if (long.class == cls) {
+      return Arrays.toString((long[]) obj);
     }
-    if (long.class == clazz) {
-      return Arrays.toString((long[]) o);
+    if (float.class == cls) {
+      return Arrays.toString((float[]) obj);
     }
-    if (float.class == clazz) {
-      return Arrays.toString((float[]) o);
+    if (double.class == cls) {
+      return Arrays.toString((double[]) obj);
     }
-    if (double.class == clazz) {
-      return Arrays.toString((double[]) o);
+    if (boolean.class == cls) {
+      return Arrays.toString((boolean[]) obj);
     }
-    if (boolean.class == clazz) {
-      return Arrays.toString((boolean[]) o);
-    }
-    // element is an array of object references
-    return Arrays.toString((Object[]) o);
+    return arrayToString((Object[]) obj);
   }
 
   /** A more human-friendly version of Arrays#toString(byte[]) that uses hex representation. */
-  private static String byteArrayToString(final byte[] bytes) {
+  private static String byteArrayToString(byte[] bytes) {
     StringBuilder builder = new StringBuilder("[");
     for (int i = 0; i < bytes.length; i++) {
       if (i > 0) {
@@ -79,112 +65,54 @@ final class Strings {
     return builder.append(']').toString();
   }
 
-  /**
-   * A more human-friendly version of Arrays#toString(Object[]) for Byte arrays
-   * that uses hex representation.
-   * */
-  private static String byteArrayToString(final Byte[] bytes) {
-    StringBuilder builder = new StringBuilder("[");
-    for (int i = 0; i < bytes.length; i++) {
-      if (i > 0) {
-        builder.append(", ");
-      }
-      builder.append(byteToString(bytes[i]));
+  private static String byteToString(Byte b) {
+    if (b == null) {
+      return "null";
     }
-    return builder.append(']').toString();
+    return "0x" + String.format("%02x", b).toUpperCase(Locale.US);
   }
 
-  /** A more human-friendly string representation of a Byte. */
-  private static String byteToString(final Byte b) {
-    return String.format("%02x", b);
-  }
-
-  /** A more human-friendly string representation of a byte. */
-  private static String byteToString(final byte b) {
-    return byteToString(Byte.valueOf(b));
-  }
-
-  /**
-   * Copy of {@link Arrays#deepToString(Object[])} modified for more human-friendly representation.
-   * @param a Array
-   * @return human-friendly string representation
-   * @see Arrays#deepToString(Object[])
-   */
-  private static String deepArrayToString(final Object[] a) {
-    int bufLen = 20 * a.length;
-    if (a.length != 0 && bufLen <= 0)
-      bufLen = Integer.MAX_VALUE;
-    StringBuilder buf = new StringBuilder(bufLen);
-    deepArrayToString(a, buf, new HashSet<Object[]>());
+  private static String arrayToString(Object[] array) {
+    StringBuilder buf = new StringBuilder();
+    arrayToString(array, buf, new HashSet<Object[]>());
     return buf.toString();
   }
 
-  /**
-   * Copy of Arrays#deepToString(Object[], StringBuilder, Set<Object[]>) modified
-   * for more human-friendly representation.
-   */
-  private static void deepArrayToString(final Object[] a, final StringBuilder buf,
-                                          final Set<Object[]> dejaVu) {
-    if (a == null) {
-      buf.append("null");
-      return;
-    }
-    int iMax = a.length - 1;
-    if (iMax == -1) {
-      buf.append("[]");
+  private static void arrayToString(Object[] array, StringBuilder builder, Set<Object[]> seen) {
+    if (array == null) {
+      builder.append("null");
       return;
     }
 
-    dejaVu.add(a);
-    buf.append('[');
-    for (int i = 0; ; i++) {
+    seen.add(array);
+    builder.append('[');
+    for (int i = 0; i < array.length; i++) {
+      if (i > 0) {
+        builder.append(", ");
+      }
 
-      Object element = a[i];
+      Object element = array[i];
       if (element == null) {
-        buf.append("null");
+        builder.append("null");
       } else {
-        Class eClass = element.getClass();
-
-        if (eClass.isArray()) {
-          if (eClass == byte[].class)
-            buf.append(toString((byte[]) element));
-          else if (eClass == short[].class)
-            buf.append(toString((short[]) element));
-          else if (eClass == int[].class)
-            buf.append(toString((int[]) element));
-          else if (eClass == long[].class)
-            buf.append(toString((long[]) element));
-          else if (eClass == char[].class)
-            buf.append(toString((char[]) element));
-          else if (eClass == float[].class)
-            buf.append(toString((float[]) element));
-          else if (eClass == double[].class)
-            buf.append(toString((double[]) element));
-          else if (eClass == boolean[].class)
-            buf.append(toString((boolean[]) element));
-          else { // element is an array of object references
-            if (dejaVu.contains(element))
-              buf.append("[...]");
-            else
-              deepArrayToString((Object[])element, buf, dejaVu);
-          }
-        } else {  // element is non-null and not an array
-          buf.append(toString(element));
+        Class elementClass = element.getClass();
+        if (elementClass.isArray() && elementClass.getComponentType() == Object.class) {
+            Object[] arrayElement = (Object[]) element;
+            if (seen.contains(arrayElement)) {
+              builder.append("[...]");
+            } else {
+              arrayToString(arrayElement, builder, seen);
+            }
+        } else {
+          builder.append(toString(element));
         }
       }
-      if (i == iMax)
-        break;
-      buf.append(", ");
     }
-    buf.append(']');
-    dejaVu.remove(a);
+    builder.append(']');
+    seen.remove(array);
   }
 
-  /**
-   * Hidden default constructor, this is a
-   * utility class and should not be instantiated.
-   */
   private Strings() {
-    // do nothing
+    throw new AssertionError("No instances.");
   }
 }
