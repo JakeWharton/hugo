@@ -12,6 +12,11 @@ public final class StringsTest extends TestCase {
     assertEquals("\"String\"", Strings.toString("String"));
   }
 
+  public void testUnprintableCharacters() {
+    assertEquals("\"Str\\ning\"", Strings.toString("Str\ning"));
+    assertEquals("\"\\n\\r\\t\\f\\b\\u202C\"", Strings.toString("\n\r\t\f\b\u202C"));
+  }
+
   public void testObjects() {
     assertEquals("1", Strings.toString(new BigInteger("1")));
   }
