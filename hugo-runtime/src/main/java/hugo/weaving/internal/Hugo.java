@@ -59,7 +59,7 @@ public class Hugo {
       builder.append(" @Thread:").append(Thread.currentThread().getName());
     }
 
-    Log.d(asTag(cls), builder.toString());
+    Log.v(asTag(cls), builder.toString());
   }
 
   private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
