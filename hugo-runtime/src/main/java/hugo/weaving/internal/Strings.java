@@ -11,7 +11,7 @@ final class Strings {
       return "null";
     }
     if (obj instanceof CharSequence) {
-      return '"' + obj.toString() + '"';
+      return '"' + printableToString(obj.toString()) + '"';
     }
 
     Class<?> cls = obj.getClass();
@@ -23,6 +23,47 @@ final class Strings {
       return arrayToString(cls.getComponentType(), obj);
     }
     return obj.toString();
+  }
+
+  private static String printableToString(String string) {
+    int length = string.length();
+    StringBuilder builder = new StringBuilder(length);
+    for (int i = 0; i < length;) {
+      int codePoint = string.codePointAt(i);
+      switch (Character.getType(codePoint)) {
+        case Character.CONTROL:
+        case Character.FORMAT:
+        case Character.PRIVATE_USE:
+        case Character.SURROGATE:
+        case Character.UNASSIGNED:
+          switch (codePoint) {
+            case '\n':
+              builder.append("\\n");
+              break;
+            case '\r':
+              builder.append("\\r");
+              break;
+            case '\t':
+              builder.append("\\t");
+              break;
+            case '\f':
+              builder.append("\\f");
+              break;
+            case '\b':
+              builder.append("\\b");
+              break;
+            default:
+              builder.append("\\u").append(String.format("%04x", codePoint).toUpperCase(Locale.US));
+              break;
+          }
+          break;
+        default:
+          builder.append(Character.toChars(codePoint));
+          break;
+      }
+      i += Character.charCount(codePoint);
+    }
+    return builder.toString();
   }
 
   private static String arrayToString(Class<?> cls, Object obj) {
