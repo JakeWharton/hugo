@@ -6,13 +6,13 @@ import org.aspectj.tools.ajc.Main
 apply plugin: 'com.android.library'
 
 dependencies {
-  compile 'org.aspectj:aspectjrt:1.8.1'
+  compile 'org.aspectj:aspectjrt:1.8.4'
   compile project(':hugo-annotations')
 }
 
 android {
   compileSdkVersion 20
-  buildToolsVersion '20.0.0'
+  buildToolsVersion '21.1.1'
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -67,7 +67,7 @@ task install(type: Exec, dependsOn: assemble) {
       "-DartifactId=hugo-runtime",
       "-Dversion=${version}",
       "-Dpackaging=aar",
-      "-Dfile=build/outputs/aar/hugo-runtime-${version}.aar"
+      "-Dfile=build/outputs/aar/hugo-runtime-release.aar"
   ]
 }
 
