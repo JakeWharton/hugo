@@ -1,7 +1,6 @@
 package hugo.weaving.internal;
 
-import android.os.Looper;
-import android.util.Log;
+
 import hugo.weaving.DebugLog;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,6 +16,22 @@ import java.util.concurrent.TimeUnit;
 
 @Aspect
 public class Hugo {
+
+    private static Logger logger = new Logger() {
+        @Override
+        public void log(String clazz, String message) {
+            System.out.println(clazz + ": " + message);
+        }
+    };
+
+    public static interface Logger {
+        public void log(String clazz, String message);
+    }
+
+    public static void setLogger(Logger logger) {
+        Hugo.logger = logger;
+    }
+
   @Pointcut("execution(@hugo.weaving.DebugLog * *(..))")
   public void method() {}
 
@@ -74,16 +89,16 @@ public class Hugo {
      builder.append(')');
     }
 
-    if (!isMainThread()) {
+//    if (!isMainThread()) {
       builder.append(" @Thread:").append(Thread.currentThread().getName());
-    }
+//    }
 
-    Log.d(asTag(clazz), builder.toString());
+    logger.log(asTag(clazz), builder.toString());
   }
 
-  private static boolean isMainThread() {
-    return Looper.myLooper() == Looper.getMainLooper();
-  }
+//  private static boolean isMainThread() {
+//    return Looper.myLooper() == Looper.getMainLooper();
+//  }
 
   private static void popMethod(JoinPoint joinPoint, boolean showOutput, Object result, long lengthMillis) {
     Signature signature = joinPoint.getSignature();
@@ -104,7 +119,7 @@ public class Hugo {
       appendObject(builder, result);
     }
 
-    Log.v(asTag(clazz), builder.toString());
+    logger.log(asTag(clazz), builder.toString());
   }
 
   private static void appendObject(StringBuilder builder, Object value) {

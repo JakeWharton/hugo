@@ -1,74 +1,24 @@
-import com.android.build.gradle.LibraryPlugin
-import org.aspectj.bridge.IMessage
-import org.aspectj.bridge.MessageHandler
-import org.aspectj.tools.ajc.Main
+buildscript {
+    repositories {
+        maven {
+            url "https://maven.eveoh.nl/content/repositories/releases"
+        }
+    }
+    dependencies {
+        classpath "nl.eveoh:gradle-aspectj:1.4"
+    }
+}
 
-apply plugin: 'com.android.library'
+apply plugin: 'java'
+project.ext {
+    aspectjVersion = '1.8.1'
+}
+
+apply plugin: 'aspectj'
 
 dependencies {
   compile 'org.aspectj:aspectjrt:1.8.1'
   compile project(':hugo-annotations')
 }
 
-android {
-  compileSdkVersion 20
-  buildToolsVersion '20.0.0'
-
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
-  }
-}
-
-android.libraryVariants.all { variant ->
-  LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
-  JavaCompile javaCompile = variant.javaCompile
-  javaCompile.doLast {
-    String[] args = [
-        "-showWeaveInfo",
-        "-1.5",
-        "-inpath", javaCompile.destinationDir.toString(),
-        "-aspectpath", javaCompile.classpath.asPath,
-        "-d", javaCompile.destinationDir.toString(),
-        "-classpath", javaCompile.classpath.asPath,
-        "-bootclasspath", plugin.bootClasspath.join(File.pathSeparator)
-    ]
-
-    MessageHandler handler = new MessageHandler(true);
-    new Main().run(args, handler)
-
-    def log = project.logger
-    for (IMessage message : handler.getMessages(null, true)) {
-      switch (message.getKind()) {
-        case IMessage.ABORT:
-        case IMessage.ERROR:
-        case IMessage.FAIL:
-          log.error message.message, message.thrown
-          break;
-        case IMessage.WARNING:
-        case IMessage.INFO:
-          log.info message.message, message.thrown
-          break;
-        case IMessage.DEBUG:
-          log.debug message.message, message.thrown
-          break;
-      }
-    }
-  }
-}
-
-// Use Maven to install the aar into our local maven repo. Quick and easy (and dirty).
-task install(type: Exec, dependsOn: assemble) {
-  // TODO get aar path dynamically when i'm not being lazy
-  executable = 'mvn'
-  args = [
-      "install:install-file",
-      "-DgroupId=com.jakewharton.hugo",
-      "-DartifactId=hugo-runtime",
-      "-Dversion=${version}",
-      "-Dpackaging=aar",
-      "-Dfile=build/libs/hugo-runtime-${version}.aar"
-  ]
-}
-
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

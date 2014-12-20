@@ -1,0 +1,22 @@
+buildscript {
+  dependencies {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.1.1-SNAPSHOT'
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'hugo'
+
+dependencies {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+//    // TODO this should come transitively
+    compile 'com.jakewharton.hugo:hugo-runtime:1.1.1-SNAPSHOT'
+}
+
