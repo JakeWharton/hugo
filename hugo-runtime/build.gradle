@@ -11,13 +11,13 @@ buildscript {
 
 apply plugin: 'java'
 project.ext {
-    aspectjVersion = '1.8.1'
+    aspectjVersion = '1.8.4'
 }
 
 apply plugin: 'aspectj'
 
 dependencies {
-  compile 'org.aspectj:aspectjrt:1.8.1'
+  compile 'org.aspectj:aspectjrt:1.8.4'
   compile project(':hugo-annotations')
 }
 

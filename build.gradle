@@ -6,7 +6,7 @@ buildscript {
 
   dependencies {
     classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7'
-    classpath 'org.aspectj:aspectjtools:1.8.1'
+    classpath 'org.aspectj:aspectjtools:1.8.4'
   }
 }
 

@@ -12,7 +12,7 @@ class HugoPlugin implements Plugin<Project> {
   @Override void apply(Project project) {
       project.dependencies {
           // TODO this should come transitively
-          compile 'org.aspectj:aspectjrt:1.8.1'
+          compile 'org.aspectj:aspectjrt:1.8.4'
           compile 'com.jakewharton.hugo:hugo-annotations:1.1.1-SNAPSHOT'
           compile 'com.jakewharton.hugo:hugo-runtime:1.1.1-SNAPSHOT'
       }
@@ -23,7 +23,7 @@ class HugoPlugin implements Plugin<Project> {
     }
   }
 
-    private void applyAndroid(Project project){
+  private void applyAndroid(Project project){
         def hasApp = project.plugins.withType(AppPlugin)
         def hasLib = project.plugins.withType(LibraryPlugin)
         if (!hasApp && !hasLib) {

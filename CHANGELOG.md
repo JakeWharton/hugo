@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 1.1.1 *(In Development)*
+--------------------------------
+
+ * Plugin ID is now 'com.jakewharton.hugo' (instead of just 'hugo').
+ * Log at the verbose level.
+ * Lower the minimum supported runtime to API 7. Woooo Eclair!
+
+
 Version 1.1.0 *(2014-04-05)*
 ----------------------------
 
