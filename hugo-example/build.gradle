@@ -38,4 +38,7 @@ android {
       applicationIdSuffix '.dev'
     }
   }
+  lintOptions {
+    abortOnError false
+  }
 }

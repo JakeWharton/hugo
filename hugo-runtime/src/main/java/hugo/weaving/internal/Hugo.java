@@ -1,8 +1,7 @@
 package hugo.weaving.internal;
 
-import android.os.Looper;
-import android.util.Log;
 
+import hugo.weaving.DebugLog;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -12,10 +11,27 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.CodeSignature;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
 public class Hugo {
+
+    private static Logger logger = new Logger() {
+        @Override
+        public void log(String clazz, String message) {
+            System.out.println(clazz + ": " + message);
+        }
+    };
+
+    public static interface Logger {
+        public void log(String clazz, String message);
+    }
+
+    public static void setLogger(Logger logger) {
+        Hugo.logger = logger;
+    }
+
   @Pointcut("execution(@hugo.weaving.DebugLog * *(..))")
   public void method() {}
 
@@ -24,48 +40,70 @@ public class Hugo {
 
   @Around("method() || constructor()")
   public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
-    pushMethod(joinPoint);
+    CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
+    boolean showInputs, showOutput;
+    try {
+     String methodName = codeSignature.getName();
+     Class<?> clazz = codeSignature.getDeclaringType();
+     Class<?>[] methodParams = codeSignature.getParameterTypes();
+     Method m = clazz.getDeclaredMethod(methodName, methodParams);
+
+     DebugLog debugLog = m.getAnnotation(DebugLog.class);
+     showInputs = debugLog.input();
+     showOutput = debugLog.output();
+    } catch (java.lang.NoSuchMethodException e){
+        showInputs = true;
+        showOutput = true;
+    }
+
+    pushMethod(joinPoint,showInputs);
 
     long startNanos = System.nanoTime();
     Object result = joinPoint.proceed();
     long stopNanos = System.nanoTime();
     long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
 
-    popMethod(joinPoint, result, lengthMillis);
+    popMethod(joinPoint, showOutput, result, lengthMillis);
 
     return result;
   }
 
-  private static void pushMethod(JoinPoint joinPoint) {
+  private static void pushMethod(JoinPoint joinPoint, boolean showInputs) {
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
-    Class<?> cls = codeSignature.getDeclaringType();
+    Class<?> clazz = codeSignature.getDeclaringType();
     String methodName = codeSignature.getName();
     String[] parameterNames = codeSignature.getParameterNames();
     Object[] parameterValues = joinPoint.getArgs();
 
     StringBuilder builder = new StringBuilder("\u21E2 ");
-    builder.append(methodName).append('(');
-    for (int i = 0; i < parameterValues.length; i++) {
-      if (i > 0) {
-        builder.append(", ");
-      }
-      builder.append(parameterNames[i]).append('=');
-      builder.append(Strings.toString(parameterValues[i]));
+    if(showInputs) {
+     builder.append(methodName).append('(');
+     for (int i = 0; i < parameterValues.length; i++) {
+        if (i > 0) {
+            builder.append(", ");
+        }
+        builder.append(parameterNames[i]).append('=');
+        appendObject(builder, parameterValues[i]);
+     }
+     builder.append(')');
     }
-    builder.append(')');
 
-    if (Looper.myLooper() != Looper.getMainLooper()) {
+//    if (!isMainThread()) {
       builder.append(" @Thread:").append(Thread.currentThread().getName());
-    }
+//    }
 
-    Log.v(asTag(cls), builder.toString());
+    logger.log(asTag(clazz), builder.toString());
   }
 
-  private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+//  private static boolean isMainThread() {
+//    return Looper.myLooper() == Looper.getMainLooper();
+//  }
+
+  private static void popMethod(JoinPoint joinPoint, boolean showOutput, Object result, long lengthMillis) {
     Signature signature = joinPoint.getSignature();
 
-    Class<?> cls = signature.getDeclaringType();
+    Class<?> clazz = signature.getDeclaringType();
     String methodName = signature.getName();
     boolean hasReturnType = signature instanceof MethodSignature
         && ((MethodSignature) signature).getReturnType() != void.class;
@@ -76,18 +114,22 @@ public class Hugo {
         .append(lengthMillis)
         .append("ms]");
 
-    if (hasReturnType) {
+    if (hasReturnType && showOutput) {
       builder.append(" = ");
-      builder.append(Strings.toString(result));
+      appendObject(builder, result);
     }
 
-    Log.v(asTag(cls), builder.toString());
+    logger.log(asTag(clazz), builder.toString());
   }
 
-  private static String asTag(Class<?> cls) {
-    if (cls.isAnonymousClass()) {
-      return asTag(cls.getEnclosingClass());
+  private static void appendObject(StringBuilder builder, Object value) {
+    builder.append(Strings.toString(value));
+  }
+
+  private static String asTag(final Class<?> clazz) {
+    if (clazz.isAnonymousClass()) {
+      return asTag(clazz.getEnclosingClass());
     }
-    return cls.getSimpleName();
+    return clazz.getSimpleName();
   }
 }

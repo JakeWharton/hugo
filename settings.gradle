@@ -1,3 +1,1 @@
-include ':hugo-annotations'
-include ':hugo-plugin'
-include ':hugo-runtime'
+include ':hugo-annotations',':hugo-runtime', ':hugo-plugin'
