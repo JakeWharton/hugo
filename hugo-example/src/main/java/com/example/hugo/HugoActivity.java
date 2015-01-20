@@ -79,11 +79,11 @@ public class HugoActivity extends Activity {
     private final String name;
 
     Charmer(String name) {
-        this.name = name;
+      this.name = name;
     }
 
     public String askHowAreYou() {
-        return "How are you " + name + "?";
+      return "How are you " + name + "?";
     }
   }
 }
