@@ -16,10 +16,19 @@ import java.util.concurrent.TimeUnit;
 
 @Aspect
 public class Hugo {
-  @Pointcut("execution(@hugo.weaving.DebugLog * *(..))")
+  @Pointcut("within(@hugo.weaving.DebugLog *)")
+  public void withinAnnotatedClass() {}
+
+  @Pointcut("execution(* *(..)) && withinAnnotatedClass()")
+  public void methodInsideAnnotatedType() {}
+
+  @Pointcut("execution(*.new(..)) && withinAnnotatedClass()")
+  public void constructorInsideAnnotatedType() {}
+
+  @Pointcut("execution(@hugo.weaving.DebugLog * *(..)) || methodInsideAnnotatedType()")
   public void method() {}
 
-  @Pointcut("execution(@hugo.weaving.DebugLog *.new(..))")
+  @Pointcut("execution(@hugo.weaving.DebugLog *.new(..)) || constructorInsideAnnotatedType()")
   public void constructor() {}
 
   @Around("method() || constructor()")
