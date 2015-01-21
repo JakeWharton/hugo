@@ -21,6 +21,9 @@ public class HugoActivity extends Activity {
     Greeter greeter = new Greeter("Jake");
     Log.d("Greeting", greeter.sayHello());
 
+    Charmer charmer = new Charmer("Jake");
+    Log.d("Charming", charmer.askHowAreYou());
+
     startSleepyThread();
   }
 
@@ -68,6 +71,19 @@ public class HugoActivity extends Activity {
     @DebugLog
     public String sayHello() {
       return "Hello, " + name;
+    }
+  }
+
+  @DebugLog
+  static class Charmer {
+    private final String name;
+
+    Charmer(String name) {
+      this.name = name;
+    }
+
+    public String askHowAreYou() {
+      return "How are you " + name + "?";
     }
   }
 }
