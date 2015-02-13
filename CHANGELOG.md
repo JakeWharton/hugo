@@ -1,12 +1,16 @@
 Change Log
 ==========
 
-Version 1.2.0 *(In Development)*
---------------------------------
+Version 1.2.0 *(2015-02-12)*
+----------------------------
 
  * Plugin ID is now 'com.jakewharton.hugo' (instead of just 'hugo').
- * Log at the verbose level.
+ * Support annotating entire classes with `@DebugLog`.
+ * Include thread names for non-main threads in the log.
  * Lower the minimum supported runtime to API 7. Woooo Eclair!
+ * Log using verbose level.
+ * Fix: Escape unprintable characters.
+ * Fix: Eliminate intermittent VerifyError occurrences.
 
 
 Version 1.1.0 *(2014-04-05)*
