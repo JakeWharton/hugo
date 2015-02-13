@@ -54,7 +54,8 @@ public class HugoActivity extends Activity {
         sleepyMethod(SOME_POINTLESS_AMOUNT_OF_TIME);
       }
 
-      @DebugLog private void sleepyMethod(long milliseconds) {
+      @DebugLog
+      private void sleepyMethod(long milliseconds) {
         SystemClock.sleep(milliseconds);
       }
     }, "I'm a lazy thr.. bah! whatever!").start();
