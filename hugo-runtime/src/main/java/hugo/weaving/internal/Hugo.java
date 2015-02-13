@@ -33,19 +33,19 @@ public class Hugo {
 
   @Around("method() || constructor()")
   public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
-    pushMethod(joinPoint);
+    enterMethod(joinPoint);
 
     long startNanos = System.nanoTime();
     Object result = joinPoint.proceed();
     long stopNanos = System.nanoTime();
     long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
 
-    popMethod(joinPoint, result, lengthMillis);
+    exitMethod(joinPoint, result, lengthMillis);
 
     return result;
   }
 
-  private static void pushMethod(JoinPoint joinPoint) {
+  private static void enterMethod(JoinPoint joinPoint) {
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
     Class<?> cls = codeSignature.getDeclaringType();
@@ -71,7 +71,7 @@ public class Hugo {
     Log.v(asTag(cls), builder.toString());
   }
 
-  private static void popMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+  private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
     Signature signature = joinPoint.getSignature();
 
     Class<?> cls = signature.getDeclaringType();
