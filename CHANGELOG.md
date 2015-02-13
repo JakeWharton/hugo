@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-Version 1.1.1 *(In Development)*
+Version 1.2.0 *(In Development)*
 --------------------------------
 
  * Plugin ID is now 'com.jakewharton.hugo' (instead of just 'hugo').

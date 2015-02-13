@@ -6,8 +6,8 @@ buildscript {
 
   dependencies {
     classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7'
-    classpath 'com.android.tools.build:gradle:1.0.0'
-    classpath 'org.aspectj:aspectjtools:1.8.4'
+    classpath 'com.android.tools.build:gradle:1.1.0-rc3'
+    classpath 'org.aspectj:aspectjtools:1.8.5'
   }
 }
 
@@ -20,6 +20,11 @@ allprojects {
   version = VERSION_NAME
 
   apply plugin: 'maven'
+}
+
+ext {
+  compileSdkVersion = 21
+  buildToolsVersion = '21.1.2'
 }
 
 task cleanExample(type: Exec) {

@@ -6,13 +6,15 @@ import org.aspectj.tools.ajc.Main
 apply plugin: 'com.android.library'
 
 dependencies {
-  compile 'org.aspectj:aspectjrt:1.8.4'
+  compile 'org.aspectj:aspectjrt:1.8.5'
   compile project(':hugo-annotations')
+
+  testCompile 'junit:junit:4.12'
 }
 
 android {
-  compileSdkVersion 20
-  buildToolsVersion '21.1.1'
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -31,7 +33,7 @@ android.libraryVariants.all { variant ->
         "-aspectpath", javaCompile.classpath.asPath,
         "-d", javaCompile.destinationDir.toString(),
         "-classpath", javaCompile.classpath.asPath,
-        "-bootclasspath", plugin.bootClasspath.join(File.pathSeparator)
+        "-bootclasspath", android.bootClasspath.join(File.pathSeparator)
     ]
 
     MessageHandler handler = new MessageHandler(true);
