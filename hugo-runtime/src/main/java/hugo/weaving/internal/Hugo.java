@@ -65,7 +65,7 @@ public class Hugo {
     builder.append(')');
 
     if (Looper.myLooper() != Looper.getMainLooper()) {
-      builder.append(" @Thread:").append(Thread.currentThread().getName());
+      builder.append(" [Thread:\"").append(Thread.currentThread().getName()).append("\"]");
     }
 
     Log.v(asTag(cls), builder.toString());
