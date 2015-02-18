@@ -35,7 +35,7 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jakewharton.hugo:hugo-plugin:1.2.0'
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
   }
 }
 

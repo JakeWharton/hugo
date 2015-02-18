@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.2.1 *(2015-02-17)*
+----------------------------
+
+ * Fix: Enforce Java 1.7 compatibility for the plugin.
+
+
 Version 1.2.0 *(2015-02-12)*
 ----------------------------
 

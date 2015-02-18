@@ -8,7 +8,7 @@ buildscript {
     }
 
     classpath 'com.android.tools.build:gradle:1.1.0-rc3'
-    classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1-SNAPSHOT'
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
   }
 }
 
