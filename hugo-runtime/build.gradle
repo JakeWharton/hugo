@@ -3,6 +3,9 @@ import org.aspectj.bridge.IMessage
 import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 
+import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS
+import static org.apache.tools.ant.taskdefs.condition.Os.isFamily
+
 apply plugin: 'com.android.library'
 
 dependencies {
@@ -62,7 +65,11 @@ android.libraryVariants.all { variant ->
 // Use Maven to install the aar into our local maven repo. Quick and easy (and dirty).
 task install(type: Exec, dependsOn: assemble) {
   // TODO get aar path dynamically when i'm not being lazy
-  executable = 'mvn'
+  if (isFamily(FAMILY_WINDOWS)) {
+    executable = 'mvn.bat'
+  } else{
+    executable = 'mvn'
+  }
   args = [
       "install:install-file",
       "-DgroupId=com.jakewharton.hugo",
