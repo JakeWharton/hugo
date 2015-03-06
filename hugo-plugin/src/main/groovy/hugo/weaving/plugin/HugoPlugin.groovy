@@ -7,7 +7,6 @@ import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.compile.JavaCompile
 
 class HugoPlugin implements Plugin<Project> {
   @Override void apply(Project project) {
@@ -37,9 +36,14 @@ class HugoPlugin implements Plugin<Project> {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
         return;
       }
+      if (!hasApp) {
+        // only applicationVariants has "dex" task
+        // @DebugLog cannot work on library project anyway. See issue 31.
+        log.debug("Currently cannot work on library project.")
+        return;
+      }
 
-      JavaCompile javaCompile = variant.javaCompile
-      javaCompile.doLast {
+      variant.dex.doFirst {
         String[] args = [
             "-showWeaveInfo",
             "-1.5",
