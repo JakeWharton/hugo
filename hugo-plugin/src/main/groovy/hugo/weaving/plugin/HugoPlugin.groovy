@@ -36,8 +36,14 @@ class HugoPlugin implements Plugin<Project> {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
         return;
       }
+      if (!hasApp) {
+        // only applicationVariants has "dex" task
+        // @DebugLog cannot work on library project anyway. See issue 31.
+        log.debug("Currently cannot work on library project.")
+        return;
+      }
 
-    variant.dex.doFirst {
+      variant.dex.doFirst {
         String[] args = [
             "-showWeaveInfo",
             "-1.5",
