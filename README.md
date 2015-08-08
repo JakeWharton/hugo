@@ -51,6 +51,8 @@ hugo {
 }
 ```
 
+If you want to toggle logging at runtime, use `Hugo.setEnabled(true|false)`
+
 Local Development
 -----------------
 
