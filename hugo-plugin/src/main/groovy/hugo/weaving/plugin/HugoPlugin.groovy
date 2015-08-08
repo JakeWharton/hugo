@@ -32,9 +32,14 @@ class HugoPlugin implements Plugin<Project> {
       compile 'com.jakewharton.hugo:hugo-annotations:1.2.2-SNAPSHOT'
     }
 
+    project.extensions.create('hugo', HugoExtension)
+
     variants.all { variant ->
       if (!variant.buildType.isDebuggable()) {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
+        return;
+      } else if (!project.hugo.enabled) {
+        log.debug("Hugo is not disabled.")
         return;
       }
 

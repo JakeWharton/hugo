@@ -43,6 +43,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.hugo'
 ```
 
+Disable logging temporarily by adding the following:
+
+```groovy
+hugo {
+  enabled false
+}
+```
+
+If you want to toggle logging at runtime, use `Hugo.setEnabled(true|false)`
+
 
 Local Development
 -----------------
