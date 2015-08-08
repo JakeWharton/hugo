@@ -16,6 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 @Aspect
 public class Hugo {
+
+  private static boolean sEnabled;
+
   @Pointcut("within(@hugo.weaving.DebugLog *)")
   public void withinAnnotatedClass() {}
 
@@ -30,6 +33,10 @@ public class Hugo {
 
   @Pointcut("execution(@hugo.weaving.DebugLog *.new(..)) || constructorInsideAnnotatedType()")
   public void constructor() {}
+
+  public static synchronized void setEnabled(boolean enabled) {
+    sEnabled = enabled;
+  }
 
   @Around("method() || constructor()")
   public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -46,6 +53,10 @@ public class Hugo {
   }
 
   private static void enterMethod(JoinPoint joinPoint) {
+    if (!sEnabled) {
+      // Logging disabled
+      return;
+    }
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
 
     Class<?> cls = codeSignature.getDeclaringType();
@@ -72,6 +83,10 @@ public class Hugo {
   }
 
   private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+    if (!sEnabled) {
+      // Logging disabled
+      return;
+    }
     Signature signature = joinPoint.getSignature();
 
     Class<?> cls = signature.getDeclaringType();
