@@ -7,6 +7,7 @@ import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.compile.JavaCompile
 
 class HugoPlugin implements Plugin<Project> {
   @Override void apply(Project project) {
@@ -37,7 +38,8 @@ class HugoPlugin implements Plugin<Project> {
         return;
       }
 
-      variant.dex.doFirst {
+      JavaCompile javaCompile = variant.javaCompile
+      javaCompile.doLast {
         String[] args = [
             "-showWeaveInfo",
             "-1.5",
