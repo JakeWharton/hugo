@@ -43,6 +43,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.hugo'
 ```
 
+Disable logging temporarily by adding the following:
+
+```groovy
+hugo {
+    logging false
+}
+```
 
 Local Development
 -----------------
