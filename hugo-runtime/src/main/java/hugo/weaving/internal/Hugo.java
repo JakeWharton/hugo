@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 public class Hugo {
 
-  private static boolean sEnabled;
+  private static volatile boolean enabled;
 
   @Pointcut("within(@hugo.weaving.DebugLog *)")
   public void withinAnnotatedClass() {}
@@ -34,8 +34,8 @@ public class Hugo {
   @Pointcut("execution(@hugo.weaving.DebugLog *.new(..)) || constructorInsideAnnotatedType()")
   public void constructor() {}
 
-  public static synchronized void setEnabled(boolean enabled) {
-    sEnabled = enabled;
+  public static void setEnabled(boolean enable) {
+    enabled = enable;
   }
 
   @Around("method() || constructor()")
@@ -53,7 +53,7 @@ public class Hugo {
   }
 
   private static void enterMethod(JoinPoint joinPoint) {
-    if (!sEnabled) {
+    if (!enabled) {
       // Logging disabled
       return;
     }
@@ -83,7 +83,7 @@ public class Hugo {
   }
 
   private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
-    if (!sEnabled) {
+    if (!enabled) {
       // Logging disabled
       return;
     }
