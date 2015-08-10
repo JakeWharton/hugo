@@ -8,6 +8,10 @@ import android.widget.TextView;
 import hugo.weaving.DebugLog;
 
 public class HugoActivity extends Activity {
+
+  // set this to false to disable logging for Greeter methods
+  private static final boolean DEBUG_LOG_GREETER = true;
+
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     TextView tv = new TextView(this);
@@ -64,12 +68,12 @@ public class HugoActivity extends Activity {
   static class Greeter {
     private final String name;
 
-    @DebugLog
+    @DebugLog(enabled = DEBUG_LOG_GREETER)
     Greeter(String name) {
       this.name = name;
     }
 
-    @DebugLog
+    @DebugLog(enabled = DEBUG_LOG_GREETER)
     public String sayHello() {
       return "Hello, " + name;
     }
