@@ -22,6 +22,23 @@ V/Example: ⇢ getName(first="Jake", last="Wharton")
 V/Example: ⇠ getName [16ms] = "Jake Wharton"
 ```
 
+You can disable annotated methods selectively by using the `enabled` parameter, allowing you to toggle
+groups of methods based on a common value. For example:
+
+```java
+private static final boolean DEBUG_LOG_NAMES = false;
+
+@DebugLog(enabled = DEBUG_LOG_NAMES)
+public String getFirstName() {
+  return first;
+}
+
+@DebugLog(enabled = DEBUG_LOG_NAMES)
+public String getLastName() {
+  return last;
+}
+```
+
 The logging will only happen in debug builds and the annotation itself is never present in the
 compiled class file for any build type. This means you can keep the annotation and check it into
 source control. It has zero effect on non-debug builds.
