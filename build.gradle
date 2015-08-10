@@ -8,6 +8,7 @@ buildscript {
     classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7'
     classpath 'com.android.tools.build:gradle:1.1.0-rc3'
     classpath 'org.aspectj:aspectjtools:1.8.5'
+    classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
   }
 }
 
