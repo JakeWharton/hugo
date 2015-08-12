@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 public class Hugo {
 
-  private static volatile boolean enabled;
+  private static volatile boolean enabled = true;
 
   @Pointcut("within(@hugo.weaving.DebugLog *)")
   public void withinAnnotatedClass() {}
