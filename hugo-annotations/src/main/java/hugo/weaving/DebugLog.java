@@ -10,4 +10,5 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 
 @Target({TYPE, METHOD, CONSTRUCTOR}) @Retention(CLASS)
 public @interface DebugLog {
+  boolean enabled() default true;
 }
