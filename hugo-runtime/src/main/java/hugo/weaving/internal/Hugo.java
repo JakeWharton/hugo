@@ -1,6 +1,7 @@
 package hugo.weaving.internal;
 
 import android.os.Looper;
+import android.os.Trace;
 import android.util.Log;
 
 import org.aspectj.lang.JoinPoint;
@@ -63,7 +64,14 @@ public class Hugo {
       builder.append(Strings.toString(parameterValues[i]));
     }
     builder.append(')');
+    final String logtag = asTag(cls);
 
+    if (android.os.Build.VERSION.SDK_INT >= 18) {
+      final String section = builder.toString().substring(2);
+      Trace.beginSection(section);
+    }
+
+    Log.v(logtag, builder.toString());
     if (Looper.myLooper() != Looper.getMainLooper()) {
       builder.append(" [Thread:\"").append(Thread.currentThread().getName()).append("\"]");
     }
@@ -72,6 +80,10 @@ public class Hugo {
   }
 
   private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+    if (android.os.Build.VERSION.SDK_INT >= 18) {
+      Trace.endSection();
+    }
+
     Signature signature = joinPoint.getSignature();
 
     Class<?> cls = signature.getDeclaringType();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.TextView;
+
 import hugo.weaving.DebugLog;
 
 public class HugoActivity extends Activity {
@@ -34,7 +35,7 @@ public class HugoActivity extends Activity {
     }
   }
 
-  @DebugLog
+  @DebugLog(trace = true)
   private int fibonacci(int number) {
     if (number <= 0) {
       throw new IllegalArgumentException("Number must be greater than zero.");
@@ -75,7 +76,7 @@ public class HugoActivity extends Activity {
     }
   }
 
-  @DebugLog
+  @DebugLog(trace = true)
   static class Charmer {
     private final String name;
 
