@@ -35,7 +35,7 @@ class HugoPlugin implements Plugin<Project> {
     project.extensions.create('hugo', HugoExtension)
 
     variants.all { variant ->
-      if (!variant.buildType.isDebuggable()) {
+      if (!variant.buildType.isForPublic()) {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
         return;
       } else if (!project.hugo.enabled) {
