@@ -23,7 +23,7 @@ public class Hugo {
   @Pointcut("within(@hugo.weaving.DebugLog *)")
   public void withinAnnotatedClass() {}
 
-  @Pointcut("execution(* *(..)) && withinAnnotatedClass()")
+  @Pointcut("execution(!synthetic * *(..)) && withinAnnotatedClass()")
   public void methodInsideAnnotatedType() {}
 
   @Pointcut("execution(*.new(..)) && withinAnnotatedClass()")
