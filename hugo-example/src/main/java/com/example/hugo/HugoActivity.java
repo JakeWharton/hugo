@@ -78,7 +78,7 @@ public class HugoActivity extends Activity {
   static class Charmer {
     private final String name;
 
-    Charmer(String name) {
+    private Charmer(String name) {
       this.name = name;
     }
 
