@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.TextView;
 import hugo.weaving.DebugLog;
+import hugo.weaving.SuppressLog;
 
 public class HugoActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,7 @@ public class HugoActivity extends Activity {
 
     Charmer charmer = new Charmer("Jake");
     Log.d("Charming", charmer.askHowAreYou());
+    charmer.doNotLogThis();
 
     startSleepyThread();
   }
@@ -84,6 +86,10 @@ public class HugoActivity extends Activity {
 
     public String askHowAreYou() {
       return "How are you " + name + "?";
+    }
+
+    @SuppressLog
+    public void doNotLogThis() {
     }
   }
 }

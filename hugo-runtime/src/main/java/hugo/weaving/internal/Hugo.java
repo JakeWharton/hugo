@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class Hugo {
   private static volatile boolean enabled = true;
 
-  @Pointcut("within(@hugo.weaving.DebugLog *)")
+  @Pointcut("within(@hugo.weaving.DebugLog *) && !@annotation(hugo.weaving.SuppressLog)")
   public void withinAnnotatedClass() {}
 
   @Pointcut("execution(!synthetic * *(..)) && withinAnnotatedClass()")

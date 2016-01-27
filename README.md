@@ -22,6 +22,21 @@ V/Example: ⇢ getName(first="Jake", last="Wharton")
 V/Example: ⇠ getName [16ms] = "Jake Wharton"
 ```
 
+Add `@SuppressLog` to your methods to suppress the long for specific methods within the class
+annotated with `@DebugLog`.
+
+```java
+@DebugLog
+static class Charmer {
+  //...
+  @SuppressLog
+  public void doNotLogThis() {
+  }
+  //...
+}
+```
+
+
 The logging will only happen in debug builds and the annotation itself is never present in the
 compiled class file for any build type. This means you can keep the annotation and check it into
 source control. It has zero effect on non-debug builds.
