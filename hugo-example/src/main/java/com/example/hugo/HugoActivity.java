@@ -6,9 +6,13 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.TextView;
 import hugo.weaving.DebugLog;
+import hugo.weaving.Profile;
 
 public class HugoActivity extends Activity {
-  @Override protected void onCreate(Bundle savedInstanceState) {
+
+  @Profile
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     TextView tv = new TextView(this);
     tv.setText("Check logcat!");

@@ -39,6 +39,10 @@ public class Hugo {
     Hugo.enabled = enabled;
   }
 
+  static boolean isEnabled() {
+    return Hugo.enabled;
+  }
+
   @Around("method() || constructor()")
   public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
     enterMethod(joinPoint);
