@@ -13,6 +13,6 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
  */
 
 
-@Target({TYPE, METHOD, CONSTRUCTOR}) @Retention(CLASS)
+@Target({METHOD, CONSTRUCTOR}) @Retention(CLASS)
 public @interface Profile {
 }
