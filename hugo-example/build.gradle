@@ -41,5 +41,5 @@ android {
 }
 
 hugo {
-  enabled false
+  enabled true
 }
