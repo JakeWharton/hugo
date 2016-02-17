@@ -39,3 +39,7 @@ android {
     }
   }
 }
+
+hugo {
+  enabled false
+}
