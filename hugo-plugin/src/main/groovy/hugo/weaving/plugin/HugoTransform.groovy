@@ -49,7 +49,7 @@ class HugoTransform extends Transform {
                 File inputFile = directoryInput.file
 
                 // All classes need to be copied regardless for some reason. So if we want to
-                // disable hugo just use aspectj to copy everything with no modification(no aspects)
+                // disable hugo simply copy files.
                 if(!enabled || !debug) {
                     FileUtils.copyDirectory(inputFile,outputDir)
                     return
@@ -60,7 +60,7 @@ class HugoTransform extends Transform {
                     FileCollection changed = new SimpleFileCollection(project.files().asList())
                     directoryInput.changedFiles.each { File file, Status status ->
                         if (status == ADDED || status == CHANGED) {
-                            changed += project.files(file);
+                            changed += project.files(file.parent);
                         }
                     }
                     inPath = changed.asPath
