@@ -4,9 +4,11 @@ import com.android.build.api.transform.*
 import com.android.utils.Pair
 import com.google.common.collect.ImmutableMap
 import groovy.transform.CompileStatic
+import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.file.FileCollection
+import org.gradle.api.internal.file.collections.SimpleFileCollection
 import org.gradle.api.tasks.compile.JavaCompile
 
 import static com.android.build.api.transform.Status.*
@@ -37,20 +39,28 @@ class HugoTransform extends Transform {
     @Override
     void transform(Context context, Collection<TransformInput> inputs, Collection<TransformInput> referencedInputs, TransformOutputProvider outputProvider, boolean isIncremental) throws IOException, TransformException, InterruptedException {
         boolean debug = context.path.toLowerCase().endsWith("debug");
-        if(!enabled || !debug) return;
 
         inputs.each { TransformInput input ->
             def outputDir = outputProvider.getContentLocation("hugo", outputTypes, scopes, Format.DIRECTORY)
+
             JavaCompile javaCompile = javaCompileTasks.get(Pair.of("", "debug"))
 
             input.directoryInputs.each { DirectoryInput directoryInput ->
+                File inputFile = directoryInput.file
+
+                // All classes need to be copied regardless for some reason. So if we want to
+                // disable hugo just use aspectj to copy everything with no modification(no aspects)
+                if(!enabled || !debug) {
+                    FileUtils.copyDirectory(inputFile,outputDir)
+                    return
+                }
 
                 String inPath;
                 if (isIncremental) {
-                    FileCollection changed = project.files()
+                    FileCollection changed = new SimpleFileCollection(project.files().asList())
                     directoryInput.changedFiles.each { File file, Status status ->
                         if (status == ADDED || status == CHANGED) {
-                            changed += project.files(file.parent);
+                            changed += project.files(file);
                         }
                     }
                     inPath = changed.asPath
@@ -58,11 +68,21 @@ class HugoTransform extends Transform {
                     inPath = javaCompile.destinationDir.toString()
                 }
 
+                FileCollection classpath = getClasspath(inputFile, referencedInputs)
+
+                String aspectsPath = classpath
+                        .filter { File f -> f.path.contains("hugo")}
+                        .asPath
+
+                String aspectClasspath = classpath
+                        .filter {File f -> f.path.contains("aspectjrt")}
+                        .asPath
+
                 def exec = new HugoExec(project)
                 exec.inpath = inPath
-                exec.aspectpath = javaCompile.classpath.asPath
+                exec.aspectpath = aspectsPath    // aspects
                 exec.destinationpath = outputDir
-                exec.classpath = javaCompile.classpath.asPath
+                exec.classpath = aspectClasspath // aspectj.jar
                 exec.bootclasspath = getBootClassPath(javaCompile).asPath
                 exec.exec()
             }
@@ -78,6 +98,42 @@ class HugoTransform extends Transform {
             // need to run but can't without the bootClasspath. Just fail and ask the user to rebuild.
             throw new ProjectConfigurationException("Unable to obtain the bootClasspath. This may happen if your javaCompile tasks didn't run but retrolambda did. You must rebuild your project or otherwise force javaCompile to run.", null)
         }
+    }
+
+    private FileCollection getClasspath(File inputFile, Collection<TransformInput> referencedInputs) {
+        String buildName = inputFile.name
+        String flavorName = inputFile.parentFile.name
+
+        // If either one starts with a number or is 'folders', it's probably the result of a transform, keep moving
+        // up the dir structure until we find the right folders.
+        // Yes I know this is bad, but hopefully per-variant transforms will land soon.
+        File current = inputFile
+        while (Character.isDigit(buildName.charAt(0)) || Character.isDigit(flavorName.charAt(0)) || buildName.equals("folders") || flavorName.equals("folders")) {
+            current = current.parentFile
+            buildName = current.name
+            flavorName = current.parentFile.name
+        }
+
+        def javaCompileTask = javaCompileTasks.get(Pair.of(flavorName, buildName))
+        if (javaCompileTask == null) {
+            // Flavor might not exist
+            javaCompileTask = javaCompileTasks.get(Pair.of("", buildName))
+        }
+
+        def classpathFiles = javaCompileTask.classpath
+        referencedInputs.each { TransformInput input -> classpathFiles += project.files(input.directoryInputs*.file) }
+
+        // bootClasspath isn't set until the last possible moment because it's expensive to look
+        // up the android sdk path.
+        def bootClasspath = javaCompileTask.options.bootClasspath
+        if (bootClasspath) {
+            classpathFiles += project.files(bootClasspath.tokenize(File.pathSeparator))
+        } else {
+            // If this is null it means the javaCompile task didn't need to run, however, we still
+            // need to run but can't without the bootClasspath. Just fail and ask the user to rebuild.
+            throw new ProjectConfigurationException("Unable to obtain the bootClasspath. This may happen if your javaCompile tasks didn't run but retrolambda did. You must rebuild your project or otherwise force javaCompile to run.", null)
+        }
+        return classpathFiles
     }
 
     @Override
