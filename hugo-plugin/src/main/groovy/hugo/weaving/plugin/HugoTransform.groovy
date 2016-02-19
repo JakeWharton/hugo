@@ -2,7 +2,6 @@ package hugo.weaving.plugin
 
 import com.android.build.api.transform.*
 import com.android.utils.Pair
-import com.google.common.collect.ImmutableMap
 import groovy.transform.CompileStatic
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
@@ -68,21 +67,11 @@ class HugoTransform extends Transform {
                     inPath = javaCompile.destinationDir.toString()
                 }
 
-                FileCollection classpath = getClasspath(inputFile, referencedInputs)
-
-                String aspectsPath = classpath
-                        .filter { File f -> f.path.contains("hugo")}
-                        .asPath
-
-                String aspectClasspath = classpath
-                        .filter {File f -> f.path.contains("aspectjrt")}
-                        .asPath
-
                 def exec = new HugoExec(project)
                 exec.inpath = inPath
-                exec.aspectpath = aspectsPath    // aspects
+                exec.aspectpath = javaCompile.classpath.asPath
                 exec.destinationpath = outputDir
-                exec.classpath = aspectClasspath // aspectj.jar
+                exec.classpath = (getClasspath(inputFile, referencedInputs) + project.files(inputFile)).asPath
                 exec.bootclasspath = getBootClassPath(javaCompile).asPath
                 exec.exec()
             }
@@ -154,13 +143,6 @@ class HugoTransform extends Transform {
     @Override
     Set<QualifiedContent.Scope> getReferencedScopes() {
         return Collections.singleton(QualifiedContent.Scope.PROJECT)
-    }
-
-    @Override
-    public Map<String, Object> getParameterInputs() {
-        return ImmutableMap.<String, Object> builder()
-                .put("enabled", enabled) // project.hugo.enabled)
-                .build();
     }
 
     @Override
