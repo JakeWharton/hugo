@@ -42,8 +42,6 @@ class HugoTransform extends Transform {
         inputs.each { TransformInput input ->
             def outputDir = outputProvider.getContentLocation("hugo", outputTypes, scopes, Format.DIRECTORY)
 
-            JavaCompile javaCompile = javaCompileTasks.get(Pair.of("", "debug"))
-
             input.directoryInputs.each { DirectoryInput directoryInput ->
                 File inputFile = directoryInput.file
 
@@ -54,7 +52,7 @@ class HugoTransform extends Transform {
                     return
                 }
 
-                String inPath;
+                String inputDirs;
                 if (isIncremental) {
                     FileCollection changed = new SimpleFileCollection(project.files().asList())
                     directoryInput.changedFiles.each { File file, Status status ->
@@ -62,34 +60,58 @@ class HugoTransform extends Transform {
                             changed += project.files(file.parent);
                         }
                     }
-                    inPath = changed.asPath
+                    inputDirs = changed.asPath
                 } else {
-                    inPath = javaCompile.destinationDir.toString()
+                    inputDirs = inputFile.path
                 }
 
+                JavaCompile javaCompileTask = getJavaCompile(inputFile)
+
+                String classpath = (getClasspath(javaCompileTask, referencedInputs) + project.files(inputFile)).asPath
+                String bootClasspath = getBootClassPath(javaCompileTask).asPath
+
                 def exec = new HugoExec(project)
-                exec.inpath = inPath
-                exec.aspectpath = javaCompile.classpath.asPath
+                exec.inpath = inputDirs
+                exec.aspectpath = classpath
                 exec.destinationpath = outputDir
-                exec.classpath = (getClasspath(inputFile, referencedInputs) + project.files(inputFile)).asPath
-                exec.bootclasspath = getBootClassPath(javaCompile).asPath
+                exec.classpath = classpath
+                exec.bootclasspath = bootClasspath
                 exec.exec()
             }
         }
     }
 
-    private FileCollection getBootClassPath(JavaCompile javaCompile) {
-        def bootClasspath = javaCompile.options.bootClasspath
+    private FileCollection getBootClassPath(JavaCompile javaCompileTask) {
+
+        def bootClasspath = javaCompileTask.options.bootClasspath
         if (bootClasspath) {
             return project.files(bootClasspath.tokenize(File.pathSeparator))
         } else {
             // If this is null it means the javaCompile task didn't need to run, however, we still
             // need to run but can't without the bootClasspath. Just fail and ask the user to rebuild.
-            throw new ProjectConfigurationException("Unable to obtain the bootClasspath. This may happen if your javaCompile tasks didn't run but retrolambda did. You must rebuild your project or otherwise force javaCompile to run.", null)
+            throw new ProjectConfigurationException("Unable to obtain the bootClasspath. This may happen if your javaCompile tasks didn't run but hugo did. You must rebuild your project or otherwise force javaCompile to run.", null)
         }
     }
 
-    private FileCollection getClasspath(File inputFile, Collection<TransformInput> referencedInputs) {
+    private FileCollection getClasspath(JavaCompile javaCompileTask, Collection<TransformInput> referencedInputs) {
+
+        def classpathFiles = javaCompileTask.classpath
+        referencedInputs.each { TransformInput input -> classpathFiles += project.files(input.directoryInputs*.file) }
+
+        // bootClasspath isn't set until the last possible moment because it's expensive to look
+        // up the android sdk path.
+        def bootClasspath = javaCompileTask.options.bootClasspath
+        if (bootClasspath) {
+            classpathFiles += project.files(bootClasspath.tokenize(File.pathSeparator))
+        } else {
+            // If this is null it means the javaCompile task didn't need to run, however, we still
+            // need to run but can't without the bootClasspath. Just fail and ask the user to rebuild.
+            throw new ProjectConfigurationException("Unable to obtain the bootClasspath. This may happen if your javaCompile tasks didn't run but hugo did. You must rebuild your project or otherwise force javaCompile to run.", null)
+        }
+        return classpathFiles
+    }
+
+    private JavaCompile getJavaCompile(File inputFile) {
         String buildName = inputFile.name
         String flavorName = inputFile.parentFile.name
 
@@ -109,20 +131,7 @@ class HugoTransform extends Transform {
             javaCompileTask = javaCompileTasks.get(Pair.of("", buildName))
         }
 
-        def classpathFiles = javaCompileTask.classpath
-        referencedInputs.each { TransformInput input -> classpathFiles += project.files(input.directoryInputs*.file) }
-
-        // bootClasspath isn't set until the last possible moment because it's expensive to look
-        // up the android sdk path.
-        def bootClasspath = javaCompileTask.options.bootClasspath
-        if (bootClasspath) {
-            classpathFiles += project.files(bootClasspath.tokenize(File.pathSeparator))
-        } else {
-            // If this is null it means the javaCompile task didn't need to run, however, we still
-            // need to run but can't without the bootClasspath. Just fail and ask the user to rebuild.
-            throw new ProjectConfigurationException("Unable to obtain the bootClasspath. This may happen if your javaCompile tasks didn't run but retrolambda did. You must rebuild your project or otherwise force javaCompile to run.", null)
-        }
-        return classpathFiles
+        return javaCompileTask;
     }
 
     @Override
@@ -137,11 +146,6 @@ class HugoTransform extends Transform {
 
     @Override
     Set<QualifiedContent.Scope> getScopes() {
-        return Collections.singleton(QualifiedContent.Scope.PROJECT)
-    }
-
-    @Override
-    Set<QualifiedContent.Scope> getReferencedScopes() {
         return Collections.singleton(QualifiedContent.Scope.PROJECT)
     }
 
