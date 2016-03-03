@@ -39,7 +39,7 @@ class HugoPlugin implements Plugin<Project> {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
         return;
       } else if (!project.hugo.enabled) {
-        log.debug("Hugo is not disabled.")
+        log.debug("Hugo is not enabled.")
         return;
       }
 
