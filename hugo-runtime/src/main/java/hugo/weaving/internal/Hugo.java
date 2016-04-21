@@ -116,8 +116,17 @@ public class Hugo {
 
   private static String asTag(Class<?> cls) {
     if (cls.isAnonymousClass()) {
-      return asTag(cls.getEnclosingClass());
+      final Class<?> enclosingClass = cls.getEnclosingClass();
+      if (enclosingClass.isEnum()) {
+        String splits[] = cls.getName().split("\\$");
+        return enumAsTag(enclosingClass, Integer.parseInt(splits[splits.length-1]));
+      }
+      return asTag(enclosingClass);
     }
     return cls.getSimpleName();
+  }
+
+  private static String enumAsTag(Class<?> enclosingClass, int enumIdx) {
+    return ((Enum)enclosingClass.getEnumConstants()[enumIdx]).name();
   }
 }
