@@ -35,25 +35,83 @@ public class Hugo {
   @Pointcut("execution(@hugo.weaving.DebugLog *.new(..)) || constructorInsideAnnotatedType()")
   public void constructor() {}
 
+
+  @Pointcut("execution(@hugo.weaving.ErrorLog * *(..))")
+  public void errorMethod() {}
+
+  @Pointcut("execution(@hugo.weaving.ErrorLog *.new(..))")
+  public void errorConstructor() {}
+
+
+  @Pointcut("execution(@hugo.weaving.InfoLog * *(..))")
+  public void infoMethod() {}
+
+  @Pointcut("execution(@hugo.weaving.InfoLog *.new(..))")
+  public void infoConstructor() {}
+
+
+  @Pointcut("execution(@hugo.weaving.VerboseLog * *(..))")
+  public void verbMethod() {}
+
+  @Pointcut("execution(@hugo.weaving.VerboseLog *.new(..))")
+  public void verbConstructor() {}
+
+
   public static void setEnabled(boolean enabled) {
     Hugo.enabled = enabled;
   }
 
+  enum LOG_TYPE {
+    ERROR, INFO, VERBOSE, DEBUG
+  }
+
   @Around("method() || constructor()")
-  public Object logAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
-    enterMethod(joinPoint);
+  public Object logDebugAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
+    enterMethod(joinPoint, LOG_TYPE.DEBUG);
 
-    long startNanos = System.nanoTime();
     Object result = joinPoint.proceed();
-    long stopNanos = System.nanoTime();
-    long lengthMillis = TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
-
-    exitMethod(joinPoint, result, lengthMillis);
+    exitMethod(joinPoint, result, lengthMillies(), LOG_TYPE.DEBUG);
 
     return result;
   }
 
-  private static void enterMethod(JoinPoint joinPoint) {
+  @Around("errorMethod() || errorConstructor()")
+  public Object logErrorAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
+    enterMethod(joinPoint, LOG_TYPE.ERROR);
+
+    Object result = joinPoint.proceed();
+    exitMethod(joinPoint, result, lengthMillies(), LOG_TYPE.ERROR);
+
+    return result;
+  }
+
+  @Around("infoMethod() || infoConstructor()")
+  public Object logInfoAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
+    enterMethod(joinPoint, LOG_TYPE.INFO);
+
+    Object result = joinPoint.proceed();
+    exitMethod(joinPoint, result, lengthMillies(), LOG_TYPE.INFO);
+
+    return result;
+  }
+
+  @Around("verbMethod() || verbConstructor()")
+  public Object logVerbAndExecute(ProceedingJoinPoint joinPoint) throws Throwable {
+    enterMethod(joinPoint, LOG_TYPE.VERBOSE);
+
+    Object result = joinPoint.proceed();
+    exitMethod(joinPoint, result, lengthMillies(), LOG_TYPE.VERBOSE);
+
+    return result;
+  }
+
+  private static long lengthMillies () {
+    long startNanos = System.nanoTime();
+    long stopNanos = System.nanoTime();
+    return TimeUnit.NANOSECONDS.toMillis(stopNanos - startNanos);
+  }
+
+  private static void enterMethod(JoinPoint joinPoint, LOG_TYPE type) {
     if (!enabled) return;
 
     CodeSignature codeSignature = (CodeSignature) joinPoint.getSignature();
@@ -78,7 +136,7 @@ public class Hugo {
       builder.append(" [Thread:\"").append(Thread.currentThread().getName()).append("\"]");
     }
 
-    Log.v(asTag(cls), builder.toString());
+    logString(asTag(cls), builder.toString(), type);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       final String section = builder.toString().substring(2);
@@ -86,7 +144,27 @@ public class Hugo {
     }
   }
 
-  private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis) {
+  private static void logString(String tag, String data, LOG_TYPE type) {
+    switch (type) {
+      case VERBOSE:
+        Log.v(tag, data);
+        break;
+
+      case DEBUG:
+        Log.d(tag, data);
+        break;
+
+      case INFO:
+        Log.i(tag, data);
+        break;
+
+      case ERROR:
+        Log.e(tag, data);
+        break;
+    }
+  }
+
+  private static void exitMethod(JoinPoint joinPoint, Object result, long lengthMillis, LOG_TYPE type) {
     if (!enabled) return;
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -111,7 +189,8 @@ public class Hugo {
       builder.append(Strings.toString(result));
     }
 
-    Log.v(asTag(cls), builder.toString());
+    logString(asTag(cls), builder.toString(), type);
+
   }
 
   private static String asTag(Class<?> cls) {

@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.TextView;
+
 import hugo.weaving.DebugLog;
+import hugo.weaving.ErrorLog;
+import hugo.weaving.InfoLog;
+import hugo.weaving.VerboseLog;
 
 public class HugoActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -15,16 +19,42 @@ public class HugoActivity extends Activity {
     setContentView(tv);
 
     printArgs("The", "Quick", "Brown", "Fox");
-
     Log.i("Fibonacci", "fibonacci's 4th number is " + fibonacci(4));
 
     Greeter greeter = new Greeter("Jake");
+    greeter.sayHello();
     Log.d("Greeting", greeter.sayHello());
 
     Charmer charmer = new Charmer("Jake");
+    charmer.askHowAreYou();
     Log.d("Charming", charmer.askHowAreYou());
 
+    testVerbose("verb");
+    testDebug("deb");
+    testInfo("inf");
+    testError("failed");
+
     startSleepyThread();
+  }
+
+  @VerboseLog
+  private String testVerbose (String data) {
+     return "done " + data;
+  }
+
+  @DebugLog
+  private String testDebug (String data) {
+    return "done " + data;
+  }
+
+  @InfoLog
+  private String testInfo (String data) {
+    return "done " + data;
+  }
+
+  @ErrorLog
+  private String testError (String data) {
+    return "done " + data;
   }
 
   @DebugLog
@@ -34,7 +64,7 @@ public class HugoActivity extends Activity {
     }
   }
 
-  @DebugLog
+  @ErrorLog
   private int fibonacci(int number) {
     if (number <= 0) {
       throw new IllegalArgumentException("Number must be greater than zero.");
@@ -61,7 +91,7 @@ public class HugoActivity extends Activity {
     }, "I'm a lazy thr.. bah! whatever!").start();
   }
 
-  @DebugLog
+  @ErrorLog
   static class Greeter {
     private final String name;
 
