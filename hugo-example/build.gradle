@@ -7,10 +7,13 @@ buildscript {
       mavenLocal()
     }
 
-    classpath 'com.android.tools.build:gradle:0.10.+'
-    classpath 'com.jakewharton.hugo:hugo-plugin:1.1.1-SNAPSHOT'
+    classpath 'com.android.tools.build:gradle:1.3.1'
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.2.2-SNAPSHOT'
   }
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'hugo'
 
 dependencies {
   repositories {
@@ -21,12 +24,9 @@ dependencies {
   }
 }
 
-apply plugin: 'android'
-apply plugin: 'hugo'
-
 android {
-  compileSdkVersion 19
-  buildToolsVersion '19.0.3'
+  compileSdkVersion 23
+  buildToolsVersion '23.0.1'
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -35,7 +35,7 @@ android {
 
   buildTypes {
     dev {
-      packageNameSuffix '.dev'
+      applicationIdSuffix '.dev'
     }
   }
 }

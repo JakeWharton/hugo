@@ -1,18 +1,20 @@
-import com.android.build.gradle.LibraryPlugin
 import org.aspectj.bridge.IMessage
 import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
 dependencies {
-  compile 'org.aspectj:aspectjrt:1.8.1'
+  compile 'org.aspectj:aspectjrt:1.8.6'
   compile project(':hugo-annotations')
+
+  testCompile 'junit:junit:4.12'
 }
 
 android {
-  compileSdkVersion 20
-  buildToolsVersion '20.0.0'
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_7
@@ -21,7 +23,6 @@ android {
 }
 
 android.libraryVariants.all { variant ->
-  LibraryPlugin plugin = project.plugins.getPlugin(LibraryPlugin)
   JavaCompile javaCompile = variant.javaCompile
   javaCompile.doLast {
     String[] args = [
@@ -31,7 +32,7 @@ android.libraryVariants.all { variant ->
         "-aspectpath", javaCompile.classpath.asPath,
         "-d", javaCompile.destinationDir.toString(),
         "-classpath", javaCompile.classpath.asPath,
-        "-bootclasspath", plugin.bootClasspath.join(File.pathSeparator)
+        "-bootclasspath", android.bootClasspath.join(File.pathSeparator)
     ]
 
     MessageHandler handler = new MessageHandler(true);
@@ -56,19 +57,3 @@ android.libraryVariants.all { variant ->
     }
   }
 }
-
-// Use Maven to install the aar into our local maven repo. Quick and easy (and dirty).
-task install(type: Exec, dependsOn: assemble) {
-  // TODO get aar path dynamically when i'm not being lazy
-  executable = 'mvn'
-  args = [
-      "install:install-file",
-      "-DgroupId=com.jakewharton.hugo",
-      "-DartifactId=hugo-runtime",
-      "-Dversion=${version}",
-      "-Dpackaging=aar",
-      "-Dfile=build/libs/hugo-runtime-${version}.aar"
-  ]
-}
-
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

@@ -21,6 +21,9 @@ public class HugoActivity extends Activity {
     Greeter greeter = new Greeter("Jake");
     Log.d("Greeting", greeter.sayHello());
 
+    Charmer charmer = new Charmer("Jake");
+    Log.d("Charming", charmer.askHowAreYou());
+
     startSleepyThread();
   }
 
@@ -51,23 +54,36 @@ public class HugoActivity extends Activity {
         sleepyMethod(SOME_POINTLESS_AMOUNT_OF_TIME);
       }
 
-      @DebugLog private void sleepyMethod(long milliseconds) {
+      @DebugLog
+      private void sleepyMethod(long milliseconds) {
         SystemClock.sleep(milliseconds);
       }
     }, "I'm a lazy thr.. bah! whatever!").start();
   }
 
+  @DebugLog
   static class Greeter {
     private final String name;
 
-    @DebugLog
     Greeter(String name) {
       this.name = name;
     }
 
-    @DebugLog
-    public String sayHello() {
+    private String sayHello() {
       return "Hello, " + name;
+    }
+  }
+
+  @DebugLog
+  static class Charmer {
+    private final String name;
+
+    private Charmer(String name) {
+      this.name = name;
+    }
+
+    public String askHowAreYou() {
+      return "How are you " + name + "?";
     }
   }
 }

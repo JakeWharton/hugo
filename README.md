@@ -18,8 +18,8 @@ public String getName(String first, String last) {
 }
 ```
 ```
-D/Example: ⇢ getName(first="Jake", last="Wharton")
-D/Example: ⇠ getName [16ms] = "Jake Wharton"
+V/Example: ⇢ getName(first="Jake", last="Wharton")
+V/Example: ⇠ getName [16ms] = "Jake Wharton"
 ```
 
 The logging will only happen in debug builds and the annotation itself is never present in the
@@ -35,13 +35,23 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.jakewharton.hugo:hugo-plugin:1.1.0'
+    classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
   }
 }
 
-apply plugin: 'android'
-apply plugin: 'hugo'
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.hugo'
 ```
+
+Disable logging temporarily by adding the following:
+
+```groovy
+hugo {
+  enabled false
+}
+```
+
+If you want to toggle logging at runtime, use `Hugo.setEnabled(true|false)`
 
 
 Local Development

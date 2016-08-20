@@ -6,12 +6,11 @@ jdk:
 
 android:
   components:
-    - build-tools-20.0.0
-    - android-20
-  licenses:
-    - android-sdk-license-5be876d5
+    - build-tools-23.0.1
+    - android-23
 
-script: ./gradlew build
+    # Update Android SDK Tools
+    - tools
 
 branches:
   except:
