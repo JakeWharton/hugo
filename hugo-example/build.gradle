@@ -33,9 +33,32 @@ android {
     targetCompatibility JavaVersion.VERSION_1_7
   }
 
-  buildTypes {
+    signingConfigs {
+        release {
+            Properties props = new Properties()
+            props.load(new FileInputStream(project.rootProject.file("local.properties")))
+            storeFile file('/Users/zhenfangzhang/android/shopee/miscs/release/keystore_release.jks')
+            storePassword props.get("shopee.storepassword")
+            keyAlias props.get("shopee.keyalias")
+            keyPassword props.get("shopee.keypassword")
+        }
+        debug {
+            storeFile file('../miscs/release/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
+
+    buildTypes {
     dev {
       applicationIdSuffix '.dev'
     }
+  internal {
+      debuggable false
+      signingConfig signingConfigs.release
+      applicationIdSuffix '.int'
+  }
   }
 }

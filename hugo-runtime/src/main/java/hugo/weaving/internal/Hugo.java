@@ -69,8 +69,12 @@ public class Hugo {
       if (i > 0) {
         builder.append(", ");
       }
-      builder.append(parameterNames[i]).append('=');
+      builder.append("\'");
+      builder.append(parameterNames[i]);
+      builder.append("\'=");
+      builder.append("\'");
       builder.append(Strings.toString(parameterValues[i]));
+      builder.append("\'");
     }
     builder.append(')');
 
