@@ -39,8 +39,8 @@ buildscript {
   }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'android'
+apply plugin: 'hugo'
 ```
 
 Disable logging temporarily by adding the following:
