@@ -3,27 +3,28 @@ import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 
 dependencies {
-  compile 'org.aspectj:aspectjrt:1.8.6'
-  compile project(':hugo-annotations')
+  implementation 'org.aspectj:aspectjrt:1.8.6'
+  implementation project(':hugo-annotations')
 
-  testCompile 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.12'
 }
 
 android {
   compileSdkVersion rootProject.ext.compileSdkVersion
   buildToolsVersion rootProject.ext.buildToolsVersion
 
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
-  }
 }
 
 android.libraryVariants.all { variant ->
-  JavaCompile javaCompile = variant.javaCompile
+  Task javaCompile
+  if (variant.hasProperty('javaCompileProvider')) {
+    // Android 3.3.0+
+    javaCompile = variant.javaCompileProvider.get()
+  } else {
+    javaCompile = variant.javaCompile
+  }
   javaCompile.doLast {
     String[] args = [
         "-showWeaveInfo",

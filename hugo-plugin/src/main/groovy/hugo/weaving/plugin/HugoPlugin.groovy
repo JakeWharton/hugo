@@ -1,7 +1,5 @@
 package hugo.weaving.plugin
 
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.LibraryPlugin
 import org.aspectj.bridge.IMessage
 import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
@@ -29,7 +27,7 @@ class HugoPlugin implements Plugin<Project> {
       debugCompile 'com.jakewharton.hugo:hugo-runtime:1.2.2-SNAPSHOT'
       // TODO this should come transitively
       debugCompile 'org.aspectj:aspectjrt:1.8.6'
-      compile 'com.jakewharton.hugo:hugo-annotations:1.2.2-SNAPSHOT'
+      implementation 'com.jakewharton.hugo:hugo-annotations:1.2.2-SNAPSHOT'
     }
 
     project.extensions.create('hugo', HugoExtension)
@@ -43,7 +41,7 @@ class HugoPlugin implements Plugin<Project> {
         return;
       }
 
-      JavaCompile javaCompile = variant.javaCompile
+      JavaCompile javaCompile = variant.getJavaCompileProvider()
       javaCompile.doLast {
         String[] args = [
             "-showWeaveInfo",
