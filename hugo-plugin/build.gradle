@@ -3,8 +3,8 @@ apply plugin: 'nexus'
 
 
 dependencies {
-//  implementation gradleApi()
-//  implementation localGroovy()
+  implementation gradleApi()
+  implementation localGroovy()
   implementation 'org.aspectj:aspectjtools:1.8.6'
   implementation 'org.aspectj:aspectjrt:1.8.6'
 }
